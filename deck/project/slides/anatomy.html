@@ -1,0 +1,29 @@
+<section id="anatomy" data-transition="fade" style="background:#F5F3EE;color:#3D4A5C;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:20px">
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;color:#0E1A2B">Anatomía del repo</h2>
+<p style="font-size:30px;line-height:1.35;color:#3D4A5C;width:1640px">Ustedes llenan lo azul, los agentes trabajan en lo morado y lo verde se llena de conocimiento validado.</p>
+<div style="position:absolute;left:128px;top:320px;width:528px;height:480px;display:flex;flex-direction:column;gap:12px;background:#E3ECFA;border-top:6px solid #2563C9;border-radius:16px;padding:28px 32px" data-build-in="rise 1">
+<div style="display:flex;flex-direction:row;gap:14px;align-items:center"><x-icon name="Users" style="color:#2563C9;width:40px;height:40px"></x-icon><h3 style="font-size:30px;font-weight:600;color:#0E1A2B">Ustedes aportan</h3></div>
+<div style="display:flex;flex-direction:column;gap:2px"><p style="font-family:'JetBrains Mono', monospace;font-size:24px;font-weight:600;color:#1D4FA3">00-context/</p><p style="font-size:24px">alcance, procesos, fuentes, repos</p></div>
+<div style="display:flex;flex-direction:column;gap:2px"><p style="font-family:'JetBrains Mono', monospace;font-size:24px;font-weight:600;color:#1D4FA3">architecture/</p><p style="font-size:24px">plataforma, estándares, NFRs</p></div>
+<div style="display:flex;flex-direction:column;gap:2px"><p style="font-family:'JetBrains Mono', monospace;font-size:24px;font-weight:600;color:#1D4FA3">input/raw/</p><p style="font-size:24px">docs exportados, si no hay MCP</p></div>
+<div style="display:flex;flex-direction:column;gap:2px"><p style="font-family:'JetBrains Mono', monospace;font-size:24px;font-weight:600;color:#1D4FA3">.mcp.json</p><p style="font-size:24px">conectores de solo lectura</p></div>
+</div>
+<div style="position:absolute;left:696px;top:320px;width:528px;height:480px;display:flex;flex-direction:column;gap:12px;background:#ECE6FD;border-top:6px solid #6D4AE0;border-radius:16px;padding:28px 32px" data-build-in="rise 2">
+<div style="display:flex;flex-direction:row;gap:14px;align-items:center"><x-icon name="Lightning" style="color:#6D4AE0;width:40px;height:40px"></x-icon><h3 style="font-size:30px;font-weight:600;color:#0E1A2B">Los agentes ejecutan</h3></div>
+<div style="display:flex;flex-direction:column;gap:2px"><p style="font-family:'JetBrains Mono', monospace;font-size:24px;font-weight:600;color:#4B2FB8">AGENTS.md</p><p style="font-size:24px">instrucciones para cualquier LLM</p></div>
+<div style="display:flex;flex-direction:column;gap:2px"><p style="font-family:'JetBrains Mono', monospace;font-size:24px;font-weight:600;color:#4B2FB8">skills/</p><p style="font-size:24px">15 pasos invocables</p></div>
+<div style="display:flex;flex-direction:column;gap:2px"><p style="font-family:'JetBrains Mono', monospace;font-size:24px;font-weight:600;color:#4B2FB8">agents/</p><p style="font-size:24px">7 roles especializados</p></div>
+<div style="display:flex;flex-direction:column;gap:2px"><p style="font-family:'JetBrains Mono', monospace;font-size:24px;font-weight:600;color:#4B2FB8">templates/</p><p style="font-size:24px">el formato de cada documento</p></div>
+</div>
+<div style="position:absolute;left:1264px;top:320px;width:528px;height:480px;display:flex;flex-direction:column;gap:12px;background:#DDF1E9;border-top:6px solid #13795B;border-radius:16px;padding:28px 32px" data-build-in="rise 3">
+<div style="display:flex;flex-direction:row;gap:14px;align-items:center"><x-icon name="CheckCircle" style="color:#13795B;width:40px;height:40px"></x-icon><h3 style="font-size:30px;font-weight:600;color:#0E1A2B">Se acumula</h3></div>
+<div style="display:flex;flex-direction:column;gap:2px"><p style="font-family:'JetBrains Mono', monospace;font-size:24px;font-weight:600;color:#0E5E46">01–03 output/</p><p style="font-size:24px">KUs con cita por proceso</p></div>
+<div style="display:flex;flex-direction:column;gap:2px"><p style="font-family:'JetBrains Mono', monospace;font-size:24px;font-weight:600;color:#0E5E46">04-audit/</p><p style="font-size:24px">As-Is validado + auditoría</p></div>
+<div style="display:flex;flex-direction:column;gap:2px"><p style="font-family:'JetBrains Mono', monospace;font-size:24px;font-weight:600;color:#0E5E46">05-spec/</p><p style="font-size:24px">PRD · SDD · AGENTS.md</p></div>
+<div style="display:flex;flex-direction:column;gap:2px"><p style="font-family:'JetBrains Mono', monospace;font-size:24px;font-weight:600;color:#0E5E46">06-poc/</p><p style="font-size:24px">contenedores + hallazgos</p></div>
+</div>
+<div style="position:absolute;left:128px;top:824px;width:1664px;display:flex;flex-direction:row;gap:20px;align-items:center;background:#FCEBD6;border-left:8px solid #E07B00;border-radius:12px;padding:16px 28px" data-build-in="fade 4"><x-icon name="Verified" style="color:#8A4A00;width:36px;height:36px"></x-icon><p style="font-size:26px;color:#0E1A2B"><b>review/ + RULES.md en cada fase:</b> el registro de cada gate humano y las reglas aprendidas</p></div>
+<p style="position:absolute;left:128px;bottom:64px;width:800px;font-size:24px;color:#5B6676">08 · El repo</p>
+<div style="position:absolute;right:128px;bottom:52px;width:1000px;display:flex;flex-direction:row;justify-content:end"><p style="font-family:'JetBrains Mono', monospace;font-size:24px;color:#0E1A2B;background:#E6E1D6;border-radius:999px;padding:8px 22px">Abrir en repo → README.md</p></div>
+<aside>Demo en vivo si se puede: abrir el repo y mostrar una carpeta de cada color. Azul: lo que ustedes aportan, con plantillas que explican qué se necesita. Morado: las instrucciones y skills que siguen los agentes. Verde: lo que se va llenando. Cada fase tiene la misma forma: AGENTS.md, RULES.md, input, output, review. Se aprende una vez.</aside>
+</section>

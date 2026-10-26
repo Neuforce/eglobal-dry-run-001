@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dry run 001</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "IBM Plex Sans", "Segoe UI", sans-serif; background: #f4f1ea; color: #1c1915; }
+  header { padding: 20px 24px 8px; }
+  h1 { margin: 0; font-size: 28px; }
+  header p { margin: 6px 0 0; color: #5c564c; }
+  main { padding: 8px 24px 32px; }
+  .board {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 20px 28px;
+    align-items: start;
+  }
+  #inputs-col { grid-column: 1; grid-row: 1; }
+  #outputs-col { grid-column: 2; grid-row: 1; }
+  #run-panel {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: min(440px, 100%);
+  }
+  section { background: #fff; border: 1px solid #e4ddd0; border-radius: 10px; padding: 16px; }
+  section.stack { background: transparent; border: 0; padding: 0; }
+  h2 { margin: 0 0 12px; font-size: 16px; }
+  @media (max-width: 800px) {
+    .board { grid-template-columns: 1fr; }
+    #inputs-col, #outputs-col, #run-panel { grid-column: 1; grid-row: auto; width: 100%; }
+  }
+  details.card { background: #fff; border: 1px solid #e4ddd0; border-radius: 10px; margin: 0 0 10px; }
+  details.card summary { cursor: pointer; padding: 12px 14px; font-weight: 600; list-style: none; }
+  details.card summary::-webkit-details-marker { display: none; }
+  details.card summary::before { content: "▸"; display: inline-block; width: 1em; color: #6b645a; }
+  details.card[open] summary::before { content: "▾"; }
+  details.card .card-body { padding: 0 8px 10px; }
+  details.card .card-body p { margin: 0 8px 8px; color: #6b645a; }
+  button, .file { display: block; width: 100%; text-align: left; border: 0; background: transparent; color: #1c1915; padding: 6px 8px; border-radius: 6px; cursor: pointer; font: inherit; }
+  .file:hover, .file[aria-current="true"] { background: #efe8db; }
+  #run { background: #1f4fd8; color: #fff; font-weight: 600; padding: 10px 12px; }
+  #run:disabled { background: #9aa6c4; cursor: wait; }
+  #run:hover:not(:disabled) { background: #183fae; }
+  #status { margin-top: 10px; font-size: 14px; }
+  pre { margin: 0; white-space: pre-wrap; word-break: break-word; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 13px; line-height: 1.45; }
+  #run-log { max-height: 240px; overflow: auto; margin-top: 12px; }
+  #backdrop { position: fixed; inset: 0; background: rgba(28, 25, 21, .35); opacity: 0; pointer-events: none; transition: opacity .2s ease; z-index: 1; }
+  #backdrop.open { opacity: 1; pointer-events: auto; }
+  #drawer { position: fixed; top: 0; right: 0; z-index: 2; width: min(640px, 100%); height: 100%; background: #fff; box-shadow: -8px 0 28px rgba(28, 25, 21, .16); transform: translateX(100%); transition: transform .25s ease; display: flex; flex-direction: column; }
+  #drawer.open { transform: translateX(0); }
+  #drawer header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 16px 16px 8px; }
+  #drawer h2 { margin: 0; font-size: 14px; font-weight: 500; color: #5c564c; word-break: break-all; }
+  #close { width: auto; background: #efe8db; padding: 8px 12px; font-weight: 600; }
+  #view { flex: 1; overflow: auto; padding: 8px 16px 24px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Dry run 001</h1>
+  <p>Proceso ficticio P-REV. Local, sin compuertas humanas.</p>
+</header>
+<main>
+  <div class="board">
+    <section class="stack" id="inputs-col">
+      <h2>Inputs</h2>
+      <div id="inputs"></div>
+    </section>
+    <section class="stack" id="outputs-col">
+      <h2>Outputs</h2>
+      <div id="outputs"></div>
+    </section>
+    <section id="run-panel">
+      <h2>Ejecutar</h2>
+      <button id="run" type="button">Ejecutar dry run</button>
+      <p id="status">Todavía no se ha corrido desde esta página.</p>
+      <pre id="run-log" hidden></pre>
+    </section>
+  </div>
+</main>
+<div id="backdrop"></div>
+<script src="/web/railway-config.js"></script>
+<aside id="drawer" aria-hidden="true">
+  <header>
+    <h2 id="path"></h2>
+    <button id="close" type="button">Cerrar</button>
+  </header>
+  <pre id="view"></pre>
+</aside>
+<script>
+const view = document.getElementById("view");
+const pathEl = document.getElementById("path");
+const statusEl = document.getElementById("status");
+const runLog = document.getElementById("run-log");
+const runBtn = document.getElementById("run");
+const drawer = document.getElementById("drawer");
+const backdrop = document.getElementById("backdrop");
+const labels = {
+  documentos: "Documentos",
+  codigo: "Código legacy",
+  contexto: "Contexto",
+  conocimiento: "Conocimiento",
+  auditoria: "Auditoría",
+  spec: "Spec",
+  poc: "PoC",
+  estado: "Estado y pruebas"
+};
+
+function group(title, paths) {
+  const card = document.createElement("details");
+  card.className = "card";
+  card.open = true;
+  const summary = document.createElement("summary");
+  summary.textContent = title;
+  card.append(summary);
+  const body = document.createElement("div");
+  body.className = "card-body";
+  if (!paths.length) {
+    const empty = document.createElement("p");
+    empty.textContent = "Vacío.";
+    body.append(empty);
+  } else {
+    for (const path of paths) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "file";
+      button.textContent = path.split("/").slice(-2).join("/");
+      button.title = path;
+      button.onclick = () => openFile(path, button);
+      body.append(button);
+    }
+  }
+  card.append(body);
+  return card;
+}
+
+function openDrawer() {
+  drawer.classList.add("open");
+  backdrop.classList.add("open");
+  drawer.setAttribute("aria-hidden", "false");
+}
+
+function closeDrawer() {
+  drawer.classList.remove("open");
+  backdrop.classList.remove("open");
+  drawer.setAttribute("aria-hidden", "true");
+}
+
+function usesLocalApi() {
+  return (location.hostname === "127.0.0.1" || location.hostname === "localhost") && location.port === "8766";
+}
+
+function railwayBases() {
+  const cfg = window.RAILWAY || {};
+  return {
+    reverso: String(cfg.reversoUrl || "").replace(/\/$/, ""),
+    emisor: String(cfg.emisorUrl || "").replace(/\/$/, ""),
+  };
+}
+
+async function openFile(path, button) {
+  document.querySelectorAll(".file").forEach((node) => node.removeAttribute("aria-current"));
+  if (button) button.setAttribute("aria-current", "true");
+  pathEl.textContent = path;
+  view.textContent = "Cargando…";
+  openDrawer();
+  if (usesLocalApi()) {
+    const response = await fetch("/api/file?path=" + encodeURIComponent(path));
+    const payload = await response.json();
+    view.textContent = payload.text || payload.error || "";
+    return;
+  }
+  const response = await fetch("/" + path.split("/").map(encodeURIComponent).join("/"));
+  view.textContent = response.ok
+    ? await response.text()
+    : "No se pudo leer " + path + " (" + response.status + ").";
+}
+
+function paint(tree) {
+  const inputs = document.getElementById("inputs");
+  const outputs = document.getElementById("outputs");
+  inputs.replaceChildren();
+  outputs.replaceChildren();
+  for (const [key, paths] of Object.entries(tree.inputs)) inputs.append(group(labels[key], paths));
+  for (const [key, paths] of Object.entries(tree.outputs)) outputs.append(group(labels[key], paths));
+}
+
+function showRun(payload) {
+  const code = payload.exit_code;
+  const ok = code === 0;
+  statusEl.textContent = code === null || code === undefined
+    ? "Sin ejecución."
+    : (ok ? "Pruebas en verde." : "La corrida falló.") + " Salida " + code + ". " + (payload.duration_s ?? "—") + " s.";
+  const parts = [];
+  if (payload.stdout) parts.push(payload.stdout);
+  if (payload.stderr) parts.push(payload.stderr);
+  if (payload.error) parts.push(payload.error);
+  runLog.hidden = false;
+  runLog.textContent = parts.join("\n") || "Sin salida.";
+}
+
+async function runOnRailway() {
+  const { reverso, emisor } = railwayBases();
+  if (!reverso || !emisor) {
+    statusEl.textContent = "Faltan RAILWAY_REVERSO_URL y RAILWAY_EMISOR_URL.";
+    runLog.hidden = false;
+    runLog.textContent = "Esas variables se escriben en /web/railway-config.js al construir el sitio en Vercel.";
+    return;
+  }
+  const lines = [];
+  const healthReverso = await fetch(reverso + "/health");
+  lines.push("GET " + reverso + "/health → " + healthReverso.status + " " + (await healthReverso.text()));
+  const healthEmisor = await fetch(emisor + "/health");
+  lines.push("GET " + emisor + "/health → " + healthEmisor.status + " " + (await healthEmisor.text()));
+  const decision = await fetch(reverso + "/v1/autorizaciones", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ emisor_id: "A", respondio: false, transcurrido_s: 20 }),
+  });
+  lines.push("POST " + reverso + "/v1/autorizaciones → " + decision.status + " " + (await decision.text()));
+  const ok = healthReverso.status === 200 && healthEmisor.status === 200 && decision.status === 200;
+  statusEl.textContent = ok
+    ? "Railway respondió 200 en los dos health y en la autorización."
+    : "Algún endpoint de Railway no respondió 200.";
+  runLog.hidden = false;
+  runLog.textContent = lines.join("\n");
+}
+
+async function load() {
+  if (usesLocalApi()) {
+    const tree = await (await fetch("/api/tree")).json();
+    paint(tree);
+    const last = await (await fetch("/api/last-run")).json();
+    if (last.stdout || last.stderr) showRun(last);
+    return;
+  }
+  const tree = await (await fetch("/web/tree.json")).json();
+  paint(tree);
+  runBtn.textContent = "Ejecutar en Railway";
+  const { reverso, emisor } = railwayBases();
+  statusEl.textContent = reverso && emisor
+    ? "Listo. El botón llama a Railway, no a esta página."
+    : "Faltan RAILWAY_REVERSO_URL y RAILWAY_EMISOR_URL.";
+}
+
+runBtn.onclick = async () => {
+  runBtn.disabled = true;
+  statusEl.textContent = "Ejecutando…";
+  try {
+    if (usesLocalApi()) {
+      const response = await fetch("/api/run", { method: "POST" });
+      const payload = await response.json();
+      showRun(payload);
+      const tree = await (await fetch("/api/tree")).json();
+      paint(tree);
+    } else {
+      await runOnRailway();
+    }
+  } catch (error) {
+    statusEl.textContent = usesLocalApi()
+      ? "No se pudo llamar al servidor."
+      : "No se pudo llamar a Railway. Revisa CORS y las URLs públicas.";
+    runLog.hidden = false;
+    runLog.textContent = String(error);
+  } finally {
+    runBtn.disabled = false;
+  }
+};
+
+document.getElementById("close").onclick = closeDrawer;
+backdrop.onclick = closeDrawer;
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") closeDrawer();
+});
+
+load();
+</script>
+</body>
+</html>

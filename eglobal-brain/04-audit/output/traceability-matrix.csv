@@ -1,0 +1,6 @@
+match_id,process,step,type,statement,ku_legacy,ku_asis,ku_code,category,disc_id,confidence,decision_ref
+M-001,P-REV,4. Fallo del reverso,exception-handling,"Cuando el reverso automático falla, el sistema deja la transacción en una cola manual.",,KU-ASIS-REV-004,,orphan,DISC-REV-001,M,decision:04-audit/review/decision-log.md#D-001
+M-002,P-REV,1. Validar al emisor,authorization,"Cuando el emisor no está en la lista de emisores autorizados, el sistema rechaza la transacción antes de enviarla.",,KU-ASIS-REV-001,KU-CODE-REV-001,confirmed,,H,
+M-003,P-REV,3. Esperar respuesta del emisor,exception-handling,"Cuando el emisor no responde, el sistema reintenta la consulta hasta 3 veces antes de disparar el reverso.",,,KU-CODE-REV-004,undocumented,DISC-REV-002,H,decision:04-audit/review/decision-log.md#D-002
+M-004,P-REV,2. Enviar el reverso,routing,"Cuando se dispara un reverso, el sistema lo envía al adquirente.",KU-LEG-REV-001,KU-ASIS-REV-002,KU-CODE-REV-002,confirmed,,H,
+M-005,P-REV,3. Esperar respuesta del emisor,timing/SLA,"Cuando el emisor no responde en 30 segundos, el sistema genera un reverso automático hacia el adquirente.",KU-LEG-REV-002,KU-ASIS-REV-003,KU-CODE-REV-003,drift,DISC-REV-003,M,decision:04-audit/review/decision-log.md#D-003

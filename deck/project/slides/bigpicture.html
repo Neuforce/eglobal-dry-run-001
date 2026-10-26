@@ -1,0 +1,66 @@
+<section id="bigpicture" data-transition="fade" style="background:#F5F3EE;color:#3D4A5C;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:20px">
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;color:#0E1A2B">El panorama completo</h2>
+<p style="font-size:30px;line-height:1.35;color:#3D4A5C;width:1640px">3 fuentes → 1 verdad validada → spec → PoC. Los puntos se frenan en cada gate hasta que un humano aprueba.</p>
+<x-embed style="position:absolute;left:128px;top:320px;width:1664px;height:580px"><!doctype html><html><head><meta charset="utf-8"><style>
+html,body{margin:0;background:transparent;font-family:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;overflow:hidden}
+.b{position:absolute;border-radius:14px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:25px;font-weight:600;line-height:1.15;box-sizing:border-box;padding:6px 12px}
+.in{background:#2563C9;color:#fff}.ll{background:#6D4AE0;color:#fff}.g{background:#E07B00;color:#0E1A2B}.o{background:#13795B;color:#fff}
+.g.on{box-shadow:0 0 0 6px rgba(224,123,0,.35)}
+.lg{position:absolute;top:540px;font-size:24px;color:#3D4A5C;display:flex;align-items:center;gap:10px}
+.sw{width:22px;height:22px;border-radius:6px;display:inline-block}
+svg{position:absolute;left:0;top:0}
+</style></head><body>
+<svg id="s" width="1664" height="580"></svg>
+<div class="b in" style="left:0;top:30px;width:290px;height:76px">Docs legacy</div>
+<div class="b in" style="left:0;top:132px;width:290px;height:76px">Docs As-Is nuevos</div>
+<div class="b in" style="left:0;top:234px;width:290px;height:76px">Código · GitHub MCP</div>
+<div class="b in" style="left:0;top:410px;width:290px;height:76px">Arquitectura</div>
+<div class="b ll" style="left:400px;top:120px;width:250px;height:100px">Normalizar a KUs</div>
+<div class="b ll" style="left:730px;top:120px;width:220px;height:100px">Cruzar fuentes</div>
+<div class="b g" id="g1" style="left:1030px;top:120px;width:200px;height:100px">Gate humano</div>
+<div class="b o" style="left:1310px;top:120px;width:354px;height:100px">As-Is validado + auditoría</div>
+<div class="b ll" style="left:400px;top:398px;width:250px;height:100px">Spec PRD → SDD</div>
+<div class="b g" id="g2" style="left:730px;top:398px;width:200px;height:100px">Gate humano</div>
+<div class="b ll" style="left:1010px;top:398px;width:240px;height:100px">PoC OpenShift</div>
+<div class="b o" style="left:1330px;top:398px;width:334px;height:100px">Hallazgos</div>
+<div class="lg" style="left:0"><span class="sw" style="background:#2563C9"></span>Entradas</div>
+<div class="lg" style="left:220px"><span class="sw" style="background:#6D4AE0"></span>Trabajo LLM</div>
+<div class="lg" style="left:470px"><span class="sw" style="background:#E07B00"></span>Gate humano</div>
+<div class="lg" style="left:720px"><span class="sw" style="background:#13795B"></span>Salidas validadas</div>
+<script>
+var NS="http://www.w3.org/2000/svg",S=document.getElementById("s");
+var P={
+ a:[[290,68],[345,68],[345,170],[1310,170]],
+ b:[[290,170],[1310,170]],
+ c:[[290,272],[345,272],[345,170],[1310,170]],
+ d:[[1487,220],[1487,320],[525,320],[525,448],[1330,448]],
+ e:[[290,448],[400,448]],
+ f:[[145,486],[145,520],[1130,520],[1130,498]]
+};
+function line(p){var e=document.createElementNS(NS,"polyline");e.setAttribute("points",p.map(function(q){return q.join(",")}).join(" "));e.setAttribute("fill","none");e.setAttribute("stroke","#C9C3B6");e.setAttribute("stroke-width","3");e.setAttribute("stroke-dasharray","6 8");S.appendChild(e)}
+for(var k in P)line(P[k]);
+function len(p){var L=[0];for(var i=1;i<p.length;i++)L.push(L[i-1]+Math.hypot(p[i][0]-p[i-1][0],p[i][1]-p[i-1][1]));return L}
+var LN={};for(k in P)LN[k]=len(P[k]);
+function at(k,d){var p=P[k],L=LN[k];for(var i=1;i<p.length;i++){if(d<=L[i]){var t=(d-L[i-1])/(L[i]-L[i-1]||1);return[p[i-1][0]+(p[i][0]-p[i-1][0])*t,p[i-1][1]+(p[i][1]-p[i-1][1])*t]}}return p[p.length-1]}
+function col(k,x,y){if(k=="e"||k=="f")return"#2563C9";if(k=="d"){if(y<448)return"#13795B";return x<1010?"#6D4AE0":"#13795B"}if(x<400)return"#2563C9";if(x<1130)return"#6D4AE0";return"#13795B"}
+function slow(k,x,y){if(k!="d"&&y<230&&x>1030&&x<1230)return .22;if(k=="d"&&y>=440&&x>730&&x<930)return .22;return 1}
+var D=[];
+function spawn(k){var c=document.createElementNS(NS,"circle");c.setAttribute("r","9");S.appendChild(c);D.push({k:k,d:0,c:c})}
+var t0=0,ta=0,td=0,te=0;
+function tick(ts){
+ if(ts-ta>420){ta=ts;spawn(["a","b","c"][Math.floor(Math.random()*3)])}
+ if(ts-td>1500){td=ts;spawn("d")}
+ if(ts-te>2200){te=ts;spawn(Math.random()<.5?"e":"f")}
+ var g1=false,g2=false;
+ for(var i=D.length-1;i>=0;i--){var o=D[i],xy=at(o.k,o.d),s=slow(o.k,xy[0],xy[1]);if(s<1){if(o.k=="d")g2=true;else g1=true}
+  o.d+=3.2*s;xy=at(o.k,o.d);o.c.setAttribute("cx",xy[0]);o.c.setAttribute("cy",xy[1]);o.c.setAttribute("fill",col(o.k,xy[0],xy[1]));
+  if(o.d>=LN[o.k][LN[o.k].length-1]){S.removeChild(o.c);D.splice(i,1)}}
+ document.getElementById("g1").className="b g"+(g1?" on":"");
+ document.getElementById("g2").className="b g"+(g2?" on":"");
+ requestAnimationFrame(tick)}
+requestAnimationFrame(tick);
+</script></body></html></x-embed>
+<p style="position:absolute;left:128px;bottom:64px;width:800px;font-size:24px;color:#5B6676">05 · El método</p>
+<div style="position:absolute;right:128px;bottom:52px;width:1000px;display:flex;flex-direction:row;justify-content:end"><p style="font-family:'JetBrains Mono', monospace;font-size:24px;color:#0E1A2B;background:#E6E1D6;border-radius:999px;padding:8px 22px">Abrir en repo → README.md</p></div>
+<aside>Recorrer de izquierda a derecha. Tres fuentes azules entran y se normalizan al mismo formato (morado). Luego se cruzan, y los puntos se frenan en el gate naranja: nada pasa sin que un humano lo apruebe. Sale el As-Is validado (verde). Ese conocimiento baja a la segunda fila: spec, otro gate, PoC y hallazgos. La arquitectura entra como insumo al spec y al PoC.</aside>
+</section>

@@ -1,0 +1,62 @@
+<section id="phase4" data-transition="push" style="background:#F5F3EE;color:#3D4A5C;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;flex-direction:row;gap:12px">
+<p style="font-size:24px;color:#5B6676;border:1px solid #C9C3B6;border-radius:999px;padding:4px 18px">0 Setup</p>
+<p style="font-size:24px;color:#5B6676;border:1px solid #C9C3B6;border-radius:999px;padding:4px 18px">1 Legacy</p>
+<p style="font-size:24px;color:#5B6676;border:1px solid #C9C3B6;border-radius:999px;padding:4px 18px">2 As-Is</p>
+<p style="font-size:24px;color:#5B6676;border:1px solid #C9C3B6;border-radius:999px;padding:4px 18px">3 Código</p>
+<p style="font-size:24px;font-weight:600;color:#F5F3EE;background:#0E1A2B;border:1px solid #0E1A2B;border-radius:999px;padding:4px 18px">4 Auditoría</p>
+<p style="font-size:24px;color:#5B6676;border:1px solid #C9C3B6;border-radius:999px;padding:4px 18px">5 Spec</p>
+<p style="font-size:24px;color:#5B6676;border:1px solid #C9C3B6;border-radius:999px;padding:4px 18px">6 PoC</p>
+</div>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;color:#0E1A2B">Fase 4 · Cruce y auditoría</h2>
+<p style="font-size:30px;line-height:1.35;color:#3D4A5C">El corazón del método: comparar unidad por unidad y dejar que los humanos decidan.</p>
+<x-embed style="position:absolute;left:128px;top:340px;width:1060px;height:570px"><!doctype html><html><head><meta charset="utf-8"><style>
+html,body{margin:0;background:transparent;font-family:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;overflow:hidden;color:#0E1A2B}
+table{border-collapse:separate;border-spacing:6px;font-size:24px}
+th{font-weight:600;color:#3D4A5C;text-align:center;padding:4px}
+td{height:44px;border-radius:8px;text-align:center;transition:background .35s,color .35s,transform .35s}
+td.r{text-align:left;color:#3D4A5C;width:150px;font-weight:600}
+td.c{width:140px;background:#E6E1D6;color:transparent}
+td.c.on{color:#0E1A2B}
+td.c.y{background:#C9D9F5}td.c.d{background:#F7D3A6}td.c.n{background:#EFECE6}td.c.q{background:#DCE3EE}
+td.x{width:330px;background:transparent;font-weight:600;color:transparent;text-align:left;padding-left:14px}
+td.x.on{color:#0E1A2B}
+.ok{background:#CDEBDD!important}.dr{background:#FAD9B0!important}.un{background:#E2DAFB!important}.or{background:#E6E1D6!important}.am{background:#D6E2F6!important}
+#bar{position:absolute;left:6px;top:520px;font-size:26px;font-weight:600;color:#0E1A2B}
+#bar span{color:#13795B}
+</style></head><body>
+<table id="t"><tr><th></th><th>Legacy</th><th>As-Is</th><th>Código</th><th style="text-align:left;padding-left:14px">Resultado</th></tr></table>
+<div id="bar">As-Is validado: <span id="pct">0%</span></div>
+<script>
+var R=[["Regla 01","y","y","y","ok"],["Regla 02","y","y","d","dr"],["Regla 03","n","n","y","un"],["Regla 04","y","y","n","or"],["Regla 05","n","y","y","ok"],["Regla 06","q","n","q","am"],["Regla 07","y","y","y","ok"],["Regla 08","n","y","d","dr"]];
+var L={ok:"✅ Confirmada",dr:"⚠️ Drift",un:"🕳️ No documentada",or:"👻 Huérfana",am:"❓ Ambigua"};
+var S={y:"●",d:"≠",n:"—",q:"?"};
+var t=document.getElementById("t"),cells=[];
+R.forEach(function(r){var tr=document.createElement("tr");var a=document.createElement("td");a.className="r";a.textContent=r[0];tr.appendChild(a);var cs=[];
+ for(var i=1;i<4;i++){var c=document.createElement("td");c.className="c";c.textContent=S[r[i]];c.dataset.k=r[i];tr.appendChild(c);cs.push(c)}
+ var x=document.createElement("td");x.className="x";x.textContent=L[r[4]];tr.appendChild(x);t.appendChild(tr);cells.push({cs:cs,x:x,k:r[4]})});
+var pct=document.getElementById("pct");
+function setP(v){pct.textContent=v+"%"}
+var step=0;
+function reset(){cells.forEach(function(o){o.cs.forEach(function(c){c.className="c"});o.x.className="x";o.x.textContent=L[o.k]});setP(0)}
+function run(){
+ if(step<cells.length){var o=cells[step];o.cs.forEach(function(c){c.className="c on "+c.dataset.k});
+  setTimeout(function(){o.x.className="x on "+o.k;var ok=cells.slice(0,step+1).filter(function(z){return z.k=="ok"}).length;setP(Math.round(ok/cells.length*100))},350)}
+ else if(step==cells.length+1){cells.forEach(function(o){if(o.k=="dr"||o.k=="am"){o.x.className="x on ok";o.x.textContent="✅ Decidida por humanos"}if(o.k=="un"){o.x.textContent="📝 Documentar"}if(o.k=="or"){o.x.textContent="🔍 Investigar"}});setP(Math.round(6/8*100))}
+ else if(step==cells.length+5){reset();step=-1}
+ step++;setTimeout(run,step<=cells.length?750:900)}
+setTimeout(run,600);
+</script></body></html></x-embed>
+<div style="position:absolute;left:1240px;top:350px;width:552px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;flex-direction:row;gap:16px;align-items:center"><p style="font-size:26px;background:#CDEBDD;border-radius:10px;padding:4px 10px">✅</p><p style="font-size:24px"><b>Confirmada:</b> docs = código</p></div>
+<div style="display:flex;flex-direction:row;gap:16px;align-items:center"><p style="font-size:26px;background:#FAD9B0;border-radius:10px;padding:4px 10px">⚠️</p><p style="font-size:24px"><b>Drift:</b> docs ≠ código</p></div>
+<div style="display:flex;flex-direction:row;gap:16px;align-items:center"><p style="font-size:26px;background:#E2DAFB;border-radius:10px;padding:4px 10px">🕳️</p><p style="font-size:24px"><b>No documentada:</b> solo en código</p></div>
+<div style="display:flex;flex-direction:row;gap:16px;align-items:center"><p style="font-size:26px;background:#E6E1D6;border-radius:10px;padding:4px 10px">👻</p><p style="font-size:24px"><b>Huérfana:</b> solo en docs</p></div>
+<div style="display:flex;flex-direction:row;gap:16px;align-items:center"><p style="font-size:26px;background:#D6E2F6;border-radius:10px;padding:4px 10px">❓</p><p style="font-size:24px"><b>Ambigua:</b> decide un SME</p></div>
+<div style="display:flex;flex-direction:column;gap:6px;background:#FCEBD6;border-left:8px solid #E07B00;border-radius:12px;padding:16px 22px"><p style="font-size:24px;line-height:1.35;color:#0E1A2B"><b>Gate conjunto:</b> Alejandra + Tech Lead resuelven todo ⚠️ y ❓</p></div>
+<p style="font-family:'JetBrains Mono', monospace;font-size:24px;font-weight:600;color:#4B2FB8;line-height:1.5">/cross-reference<br>/review-gate 04-audit<br>/audit-report</p>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:800px;font-size:24px;color:#5B6676">13 · Fase 4</p>
+<div style="position:absolute;right:128px;bottom:52px;width:1100px;display:flex;flex-direction:row;justify-content:end"><p style="font-family:'JetBrains Mono', monospace;font-size:24px;color:#0E1A2B;background:#E6E1D6;border-radius:999px;padding:8px 22px">Abrir en repo → skills/cross-reference/SKILL.md</p></div>
+<aside>La matriz se llena regla por regla: qué dice cada fuente y cuál es el resultado. El agente nunca resuelve un drift o una ambigüedad: presenta la evidencia y una recomendación. En la sesión conjunta, Alejandra y el Tech Lead deciden; el porcentaje de As-Is validado sube. Salidas: matriz de trazabilidad, un registro por discrepancia, el As-Is validado por proceso y el reporte de auditoría para la demo de la semana 3.</aside>
+</section>

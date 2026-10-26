@@ -1,0 +1,22 @@
+# Secrets / local config
+.mcp.json
+.env
+.env.*
+*.pem
+.claude/settings.local.json
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# Optional: uncomment if raw exports are too sensitive to version
+# 01-legacy/input/raw/*
+# 02-asis/input/raw/*
+# !**/.gitkeep
+
+# PoC build artifacts
+06-poc/**/node_modules/
+06-poc/**/target/
+06-poc/**/dist/
+06-poc/**/__pycache__/

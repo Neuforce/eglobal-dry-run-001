@@ -1,0 +1,21 @@
+<section id="ku" data-transition="fade" style="background:#F5F3EE;color:#3D4A5C;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:20px">
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;color:#0E1A2B">Un idioma para tres fuentes</h2>
+<p style="font-size:30px;line-height:1.35;color:#3D4A5C;width:1640px">Convertimos docs y código al mismo formato, la Knowledge Unit (KU), para compararlos ítem por ítem.</p>
+<div style="position:absolute;left:128px;top:350px;width:420px;display:flex;flex-direction:row;gap:20px;align-items:center;background:#E6E1D6;border-radius:16px;padding:24px 28px" data-build-in="left 1"><x-icon name="Book" style="color:#4A5463;width:44px;height:44px"></x-icon><div style="display:flex;flex-direction:column;gap:2px"><h3 style="font-size:28px;font-weight:600;color:#0E1A2B">Manual legacy</h3><p style="font-size:24px;color:#3D4A5C">p. 41 · dice 25 s</p></div></div>
+<div style="position:absolute;left:128px;top:510px;width:420px;display:flex;flex-direction:row;gap:20px;align-items:center;background:#E3ECFA;border-radius:16px;padding:24px 28px" data-build-in="left 2"><x-icon name="Chat" style="color:#2563C9;width:44px;height:44px"></x-icon><div style="display:flex;flex-direction:column;gap:2px"><h3 style="font-size:28px;font-weight:600;color:#0E1A2B">Doc As-Is</h3><p style="font-size:24px;color:#3D4A5C">§3.2 · dice 30 s</p></div></div>
+<div style="position:absolute;left:128px;top:670px;width:420px;display:flex;flex-direction:row;gap:20px;align-items:center;background:#DCEFEF;border-radius:16px;padding:24px 28px" data-build-in="left 3"><x-icon name="Code" style="color:#0B6A6C;width:44px;height:44px"></x-icon><div style="display:flex;flex-direction:column;gap:2px"><h3 style="font-size:28px;font-weight:600;color:#0E1A2B">Código</h3><p style="font-size:24px;color:#3D4A5C">Scheduler.java:42 · 25 s</p></div></div>
+<x-shape kind="arrow-right" style="position:absolute;left:584px;top:578px;width:84px;height:44px;background:#6D4AE0" data-build-in="fade 4"></x-shape>
+<div style="position:absolute;left:704px;top:350px;width:1088px;display:flex;flex-direction:column;gap:10px;background:#0E1A2B;border-radius:20px;padding:36px 44px;font-family:'JetBrains Mono', monospace;color:#E6EBF2" data-build-in="pop 5">
+<p style="font-size:28px;font-weight:600;color:#F2A541">KU-ASIS-EX-004</p>
+<p style="font-size:24px"><span style="color:#8FB3F0">step:</span> 3. Esperar respuesta del emisor</p>
+<p style="font-size:24px"><span style="color:#8FB3F0">type:</span> timing/SLA</p>
+<p style="font-size:24px;line-height:1.4"><span style="color:#8FB3F0">statement:</span> Cuando el emisor no responde en 30 s, el switch genera un reverso automático.</p>
+<p style="font-size:24px"><span style="color:#8FB3F0">source:</span> doc:ASIS-EX-Reversos.docx#3.2</p>
+<p style="font-size:24px"><span style="color:#8FB3F0">excerpt:</span> "…en 30 segundos, se debe generar…"</p>
+<p style="font-size:24px"><span style="color:#8FB3F0">confidence:</span> M · <span style="color:#8FB3F0">status:</span> approved</p>
+</div>
+<p style="position:absolute;left:704px;top:836px;width:1088px;font-size:24px;color:#5B6676" data-build-in="fade 5">Ejemplo ficticio. El mismo formato para las tres fuentes; cada KU lleva su cita.</p>
+<p style="position:absolute;left:128px;bottom:64px;width:800px;font-size:24px;color:#5B6676">06 · Knowledge Unit</p>
+<div style="position:absolute;right:128px;bottom:52px;width:1000px;display:flex;flex-direction:row;justify-content:end"><p style="font-family:'JetBrains Mono', monospace;font-size:24px;color:#0E1A2B;background:#E6E1D6;border-radius:999px;padding:8px 22px">Abrir en repo → guide/03-knowledge-schema.md</p></div>
+<aside>Este es el truco del método. Si cada fuente se convierte en tarjetas con los mismos campos (proceso, paso, tipo, enunciado, cita, confianza), compararlas se vuelve mecánico. Fíjense en el ejemplo: el legacy y el código dicen 25 segundos, el As-Is dice 30. Sin este formato nadie lo vería. La cita es obligatoria: sin fuente no es un hecho.</aside>
+</section>

@@ -1,0 +1,54 @@
+<section id="hitl" data-transition="fade" style="background:#ECE8DF;color:#3D4A5C;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:20px">
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;color:#0E1A2B">LLM + humano en el loop</h2>
+<p style="font-size:30px;line-height:1.35;color:#3D4A5C;width:1640px">El LLM lee y compara; el humano aporta criterio; cada corrección mejora la siguiente corrida.</p>
+<x-embed style="position:absolute;left:128px;top:310px;width:780px;height:600px"><!doctype html><html><head><meta charset="utf-8"><style>
+html,body{margin:0;background:transparent;font-family:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;overflow:hidden}
+.n{position:absolute;width:250px;height:96px;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-size:25px;font-weight:600;line-height:1.15;box-sizing:border-box;padding:6px 10px;transition:transform .25s}
+.n small{font-size:24px;font-weight:500}
+.ll{background:#6D4AE0;color:#fff}.pk{background:#F5F3EE;color:#0E1A2B;border:3px solid #6D4AE0}.g{background:#E07B00;color:#0E1A2B}.o{background:#13795B;color:#fff}
+.hit{transform:scale(1.08)}
+#dec{position:absolute;left:265px;top:248px;width:250px;text-align:center;font-size:30px;font-weight:700;color:#0E1A2B;opacity:0;transition:opacity .3s}
+#cnt{position:absolute;left:240px;top:300px;width:300px;text-align:center;font-size:24px;color:#3D4A5C}
+#cnt b{font-size:44px;color:#13795B;display:block}
+svg{position:absolute;left:0;top:0}
+</style></head><body>
+<svg width="780" height="600"><circle cx="390" cy="300" r="215" fill="none" stroke="#C9C3B6" stroke-width="4" stroke-dasharray="8 10"/><circle id="dot" r="14" fill="#0E1A2B"/></svg>
+<div class="n ll" id="n0" style="left:265px;top:37px">Agente propone<small>KUs, DISC, specs</small></div>
+<div class="n pk" id="n1" style="left:520px;top:252px">Paquete de revisión<small>muestra + alertas</small></div>
+<div class="n g" id="n2" style="left:265px;top:467px">Humano decide<small>✅ ✏️ ❌</small></div>
+<div class="n o" id="n3" style="left:10px;top:252px">RULES.md aprende<small>regla R-###</small></div>
+<div id="dec"></div>
+<div id="cnt"><b id="k">0</b>reglas aprendidas</div>
+<script>
+var th=0,seg=0,pause=0,k=0,di=0,dot=document.getElementById("dot"),dec=document.getElementById("dec");
+var D=["✅ Aprobar","✏️ Corregir","❌ Rechazar","✏️ Corregir"],cur="";
+function hit(s){for(var i=0;i<4;i++)document.getElementById("n"+i).classList.toggle("hit",i==s)}
+function f(){
+ if(pause>0){pause--;if(pause==0)hit(-1);requestAnimationFrame(f);return}
+ th+=0.02;if(th>=Math.PI*2)th-=Math.PI*2;
+ var ang=th-Math.PI/2;dot.setAttribute("cx",390+215*Math.cos(ang));dot.setAttribute("cy",300+215*Math.sin(ang));
+ var s=Math.floor(th/(Math.PI/2))%4;
+ if(s!=seg){seg=s;hit(s);pause=45;
+  if(s==2){cur=D[di++%4];dec.textContent=cur;dec.style.opacity=1}
+  if(s==3){if(cur.indexOf("Aprobar")<0){k++;document.getElementById("k").textContent=k}dec.style.opacity=0}}
+ requestAnimationFrame(f)}
+requestAnimationFrame(f);
+</script></body></html></x-embed>
+<div style="position:absolute;left:968px;top:330px;width:824px;display:flex;flex-direction:column;gap:16px">
+<h3 style="font-size:32px;font-weight:600;color:#0E1A2B">Quién aprueba cada gate</h3>
+<table style="font-size:24px;color:#3D4A5C;background:#F5F3EE;border-radius:12px">
+<tr><th style="width:44%">Gate</th><th style="width:56%">Aprueba</th></tr>
+<tr><td>G0 Contexto + spike</td><td>Alejandra + Tech Lead</td></tr>
+<tr><td>G1 Docs legacy</td><td>SME de negocio</td></tr>
+<tr><td>G2 As-Is</td><td>Alejandra</td></tr>
+<tr><td>G3 Código</td><td>Tech Lead</td></tr>
+<tr><td>G4 Discrepancias</td><td>Alejandra + Tech Lead</td></tr>
+<tr><td>G5 PRD · SDD</td><td>Dueño de negocio · Arquitecto</td></tr>
+<tr><td>G6 PoC</td><td>Arquitecto</td></tr>
+</table>
+<p style="font-size:24px;line-height:1.35;color:#5B6676">Propuesta 🟨: muestreo del 20% más todo lo marcado ⚠️ ❓; el gate pasa con ≥ 90% de precisión.</p>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:800px;font-size:24px;color:#5B6676">07 · Humano en el loop</p>
+<div style="position:absolute;right:128px;bottom:52px;width:1000px;display:flex;flex-direction:row;justify-content:end"><p style="font-family:'JetBrains Mono', monospace;font-size:24px;color:#0E1A2B;background:#F5F3EE;border-radius:999px;padding:8px 22px">Abrir en repo → guide/02-human-in-the-loop.md</p></div>
+<aside>El ciclo: el agente propone, arma un paquete de revisión (una muestra más todo lo dudoso), el humano aprueba, corrige o rechaza. Cada corrección que generaliza se vuelve una regla en RULES.md y el agente la obedece en la siguiente corrida: el contador sube. Así el sistema aprende de su experto, no al revés. La tabla de aprobadores es una propuesta; la validamos hoy.</aside>
+</section>

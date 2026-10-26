@@ -1,0 +1,9 @@
+# 🟥 REQUIRED: replace placeholder handles with real eGlobal GitHub users/teams
+*                          @eglobal/tech-lead
+/00-context/               @eglobal/tech-lead @eglobal/asis-owner
+/00-context/architecture/  @eglobal/architect
+/02-asis/                  @eglobal/asis-owner
+/04-audit/                 @eglobal/asis-owner @eglobal/tech-lead
+/05-spec/                  @eglobal/business-owner @eglobal/tech-lead
+/06-poc/                   @eglobal/architect
+/guide/ /skills/ /agents/ /templates/  @neuforce/method

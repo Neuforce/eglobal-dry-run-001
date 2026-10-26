@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spike 001 — flujo con aprobaciones</title>
+<style>
+  :root {
+    --sheet: 720px;
+    --ink: #1c2430;
+    --muted: #5e6874;
+    --paper: #f3f1ec;
+    --card: #ffffff;
+    --line: #e3ddd4;
+    --agent: #2457d6;
+    --agent-bg: #f3f6ff;
+    --human: #c46b00;
+    --human-bg: #fff6ea;
+    --skip: #8d8680;
+    --skip-bg: #f7f6f4;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font: 16px/1.45 "Segoe UI", system-ui, sans-serif;
+  }
+  .sheet {
+    width: var(--sheet);
+    margin: 32px auto 48px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 28px 32px 20px;
+  }
+  .kicker {
+    margin: 0 0 6px;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--human);
+    font-weight: 650;
+  }
+  h1 { margin: 0 0 8px; font-size: 28px; letter-spacing: -0.02em; }
+  .lede { margin: 0 0 18px; color: var(--muted); min-height: 46px; }
+  .legend {
+    display: flex;
+    gap: 16px;
+    margin: 0 0 22px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: #faf9f7;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .swatch { width: 14px; height: 14px; border-radius: 4px; display: inline-block; }
+  .swatch.agent { background: var(--agent); }
+  .swatch.human { background: var(--human); }
+  ol { list-style: none; margin: 0; padding: 0; }
+  .phase { display: grid; grid-template-columns: 36px 1fr; gap: 12px; }
+  .phase + .phase { margin-top: 14px; }
+  .rail { display: flex; flex-direction: column; align-items: center; }
+  .num {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--ink); color: white;
+    font-size: 13px; font-weight: 650;
+    display: grid; place-items: center;
+  }
+  .stem { flex: 1; width: 2px; background: var(--line); margin-top: 6px; min-height: 12px; }
+  .phase:last-child .stem { display: none; }
+  h2 { margin: 0 0 8px; font-size: 16px; }
+  .node {
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin: 0 0 8px;
+  }
+  .node:last-child { margin-bottom: 0; }
+  .node header {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; font-weight: 650; letter-spacing: 0.02em;
+    margin-bottom: 4px;
+  }
+  .node p { margin: 0; font-size: 14px; }
+  .agent { background: var(--agent-bg); border-left: 4px solid var(--agent); }
+  .agent header { color: var(--agent); }
+  .human { background: var(--human-bg); border-left: 4px solid var(--human); }
+  .human header { color: var(--human); }
+  svg { display: block; }
+  footer {
+    margin-top: 22px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 14px;
+  }
+  footer a { color: var(--agent); font-weight: 650; }
+  .foot-note { color: var(--muted); }
+</style>
+</head>
+<body>
+<main class="sheet">
+  <p class="kicker">Spike 001</p>
+  <h1>Spike 001</h1>
+  <p class="lede">El flujo real del método, con las mismas siete fases. El agente propone. Una persona aprueba antes de seguir. Nadie firma en automático.</p>
+  <div class="legend">
+    <span><i class="swatch agent"></i> Agente</span>
+    <span><i class="swatch human"></i> Persona que revisa o aprueba</span>
+  </div>
+  <ol>
+    <li class="phase">
+      <div class="rail"><div class="num">0</div><div class="stem"></div></div>
+      <div>
+        <h2>Setup</h2>
+        <article class="node human">
+          <header>
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="5" r="2.2" fill="none" stroke="#c46b00" stroke-width="1.4"/><path d="M3.5 13.2c.6-2.3 2.3-3.4 4.5-3.4s3.9 1.1 4.5 3.4" fill="none" stroke="#c46b00" stroke-width="1.4" stroke-linecap="round"/></svg>
+            Tech Lead
+          </header>
+          <p>Clona el repo y deja listas las herramientas y el acceso de solo lectura.</p>
+        </article>
+        <article class="node agent">
+          <header>
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="#2457d6" stroke-width="1.4"/><path d="M8 4.5v4l2.4 1.4" fill="none" stroke="#2457d6" stroke-width="1.4" stroke-linecap="round"/></svg>
+            Agente
+          </header>
+          <p>Entrevista y llena el contexto. Después redacta el proceso de validación del spike.</p>
+        </article>
+        <article class="node human">
+          <header>
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="5" r="2.2" fill="none" stroke="#c46b00" stroke-width="1.4"/><path d="M3.5 13.2c.6-2.3 2.3-3.4 4.5-3.4s3.9 1.1 4.5 3.4" fill="none" stroke="#c46b00" stroke-width="1.4" stroke-linecap="round"/></svg>
+            G0 · Alejandra y Tech Lead
+          </header>
+          <p>Revisan los supuestos y aprueban el diseño del spike. Sin esa firma no se extrae conocimiento.</p>
+        </article>
+      </div>
+    </li>
+    <li class="phase">
+      <div class="rail"><div class="num">1</div><div class="stem"></div></div>
+      <div>
+        <h2>Legacy</h2>
+        <article class="node agent">
+          <header>
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="#2457d6" stroke-width="1.4"/><path d="M8 4.5v4l2.4 1.4" fill="none" stroke="#2457d6" stroke-width="1.4" stroke-linecap="round"/></svg>
+            Agente
+          </header>
+          <p>Extrae el inventario y las unidades de conocimiento de la documentación legado.</p>
+        </article>
+        <article class="node human">
+          <header>
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="5" r="2.2" fill="none" stroke="#c46b00" stroke-width="1.4"/><path d="M3.5 13.2c.6-2.3 2.3-3.4 4.5-3.4s3.9 1.1 4.5 3.4" fill="none" stroke="#c46b00" stroke-width="1.4" stroke-linecap="round"/></svg>
+            G1 · SME de negocio
+          </header>
+          <p>Revisa la muestra. Alejandra se consulta. Puede aprobar, corregir o rechazar.</p>
+        </article>
+      </div>
+    </li>
+    <li class="phase">
+      <div class="rail"><div class="num">2</div><div class="stem"></div></div>
+      <div>
+        <h2>As-Is</h2>
+        <article class="node agent">
+          <header>
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="#2457d6" stroke-width="1.4"/><path d="M8 4.5v4l2.4 1.4" fill="none" stroke="#2457d6" stroke-width="1.4" stroke-linecap="round"/></svg>
+            Agente
+          </header>
+          <p>Extrae las unidades del As-Is nuevo y el delta contra el legado.</p>
+        </article>
+        <article class="node human">
+          <header>
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="5" r="2.2" fill="none" stroke="#c46b00" stroke-width="1.4"/><path d="M3.5 13.2c.6-2.3 2.3-3.4 4.5-3.4s3.9 1.1 4.5 3.4" fill="none" stroke="#c46b00" stroke-width="1.4" stroke-linecap="round"/></svg>
+            G2 · Alejandra
+          </header>
+          <p>Aprueba el conocimiento del As-Is. Es la dueña de ese lado.</p>
+        </article>
+      </div>
+    </li>
+    <li class="phase">
+      <div class="rail"><div class="num">3</div><div class="stem"></div></div>
+      <div>
+        <h2>Code</h2>
+        <article class="node agent">
+          <header>
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="#2457d6" stroke-width="1.4"/><path d="M8 4.5v4l2.4 1.4" fill="none" stroke="#2457d6" stroke-width="1.4" stroke-linecap="round"/></svg>
+            Agente
+          </header>
+          <p>Lee el código en solo lectura y escribe el mapa y las unidades de reglas.</p>
+        </article>
+        <article class="node human">
+          <header>
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="5" r="2.2" fill="none" stroke="#c46b00" stroke-width="1.4"/><path d="M3.5 13.2c.6-2.3 2.3-3.4 4.5-3.4s3.9 1.1 4.5 3.4" fill="none" stroke="#c46b00" stroke-width="1.4" stroke-linecap="round"/></svg>
+            G3 · Tech Lead
+          </header>
+          <p>Aprueba lo extraído del código. Los desarrolladores se consultan.</p>
+        </article>
+      </div>
+    </li>
+    <li class="phase">
+      <div class="rail"><div class="num">4</div><div class="stem"></div></div>
+      <div>
+        <h2>Audit</h2>
+        <article class="node agent">
+          <header>
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="#2457d6" stroke-width="1.4"/><path d="M8 4.5v4l2.4 1.4" fill="none" stroke="#2457d6" stroke-width="1.4" stroke-linecap="round"/></svg>
+            Agente
+          </header>
+          <p>Cruza las tres fuentes: matriz de trazabilidad y un registro por cada discrepancia.</p>
+        </article>
+        <article class="node human">
+          <header>
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="5" r="2.2" fill="none" stroke="#c46b00" stroke-width="1.4"/><path d="M3.5 13.2c.6-2.3 2.3-3.4 4.5-3.4s3.9 1.1 4.5 3.4" fill="none" stroke="#c46b00" stroke-width="1.4" stroke-linecap="round"/></svg>
+            G4 · Alejandra y Tech Lead
+          </header>
+          <p>Sesión conjunta. Resuelven cada discrepancia: aprobar, corregir o rechazar. NeuForce facilita.</p>
+        </article>
+        <article class="node agent">
+          <header>
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="#2457d6" stroke-width="1.4"/><path d="M8 4.5v4l2.4 1.4" fill="none" stroke="#2457d6" stroke-width="1.4" stroke-linecap="round"/></svg>
+            Agente
+          </header>
+          <p>Con esas decisiones escribe el As-Is validado y el informe de auditoría.</p>
+        </article>
+        <article class="node human">
+          <header>
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="5" r="2.2" fill="none" stroke="#c46b00" stroke-width="1.4"/><path d="M3.5 13.2c.6-2.3 2.3-3.4 4.5-3.4s3.9 1.1 4.5 3.4" fill="none" stroke="#c46b00" stroke-width="1.4" stroke-linecap="round"/></svg>
+            Firma · Alejandra y Tech Lead
+          </header>
+          <p>Los dos firman el As-Is validado. Esa firma abre la especificación.</p>
+        </article>
+      </div>
+    </li>
+    <li class="phase">
+      <div class="rail"><div class="num">5</div><div class="stem"></div></div>
+      <div>
+        <h2>Spec</h2>
+        <article class="node agent">
+          <header>
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="#2457d6" stroke-width="1.4"/><path d="M8 4.5v4l2.4 1.4" fill="none" stroke="#2457d6" stroke-width="1.4" stroke-linecap="round"/></svg>
+            Agente
+          </header>
+          <p>Redacta el PRD.</p>
+        </article>
+        <article class="node human">
+          <header>
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="5" r="2.2" fill="none" stroke="#c46b00" stroke-width="1.4"/><path d="M3.5 13.2c.6-2.3 2.3-3.4 4.5-3.4s3.9 1.1 4.5 3.4" fill="none" stroke="#c46b00" stroke-width="1.4" stroke-linecap="round"/></svg>
+            G5a · Dueño de negocio
+          </header>
+          <p>Aprueba el PRD. Alejandra se consulta.</p>
+        </article>
+        <article class="node agent">
+          <header>
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="#2457d6" stroke-width="1.4"/><path d="M8 4.5v4l2.4 1.4" fill="none" stroke="#2457d6" stroke-width="1.4" stroke-linecap="round"/></svg>
+            Agente
+          </header>
+          <p>Redacta el SDD y el AGENTS.md de la capacidad.</p>
+        </article>
+        <article class="node human">
+          <header>
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="5" r="2.2" fill="none" stroke="#c46b00" stroke-width="1.4"/><path d="M3.5 13.2c.6-2.3 2.3-3.4 4.5-3.4s3.9 1.1 4.5 3.4" fill="none" stroke="#c46b00" stroke-width="1.4" stroke-linecap="round"/></svg>
+            G5b · Tech Lead o arquitecto
+          </header>
+          <p>Aprueban el diseño técnico. Antes del PoC, el Tech Lead deja la arquitectura sin huecos obligatorios.</p>
+        </article>
+      </div>
+    </li>
+    <li class="phase">
+      <div class="rail"><div class="num">6</div><div class="stem"></div></div>
+      <div>
+        <h2>PoC</h2>
+        <article class="node agent">
+          <header>
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="#2457d6" stroke-width="1.4"/><path d="M8 4.5v4l2.4 1.4" fill="none" stroke="#2457d6" stroke-width="1.4" stroke-linecap="round"/></svg>
+            Agente
+          </header>
+          <p>Escribe el plan del PoC: un slice de uno o dos contenedores, con integraciones simuladas.</p>
+        </article>
+        <article class="node human">
+          <header>
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="5" r="2.2" fill="none" stroke="#c46b00" stroke-width="1.4"/><path d="M3.5 13.2c.6-2.3 2.3-3.4 4.5-3.4s3.9 1.1 4.5 3.4" fill="none" stroke="#c46b00" stroke-width="1.4" stroke-linecap="round"/></svg>
+            Arquitecto
+          </header>
+          <p>Aprueba el plan. Sin eso no se construye.</p>
+        </article>
+        <article class="node agent">
+          <header>
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="#2457d6" stroke-width="1.4"/><path d="M8 4.5v4l2.4 1.4" fill="none" stroke="#2457d6" stroke-width="1.4" stroke-linecap="round"/></svg>
+            Agente
+          </header>
+          <p>Construye el servicio, el mock, las pruebas y los manifiestos. Después escribe los hallazgos.</p>
+        </article>
+        <article class="node human">
+          <header>
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="5" r="2.2" fill="none" stroke="#c46b00" stroke-width="1.4"/><path d="M3.5 13.2c.6-2.3 2.3-3.4 4.5-3.4s3.9 1.1 4.5 3.4" fill="none" stroke="#c46b00" stroke-width="1.4" stroke-linecap="round"/></svg>
+            G6 · Arquitecto, luego Champions
+          </header>
+          <p>El arquitecto aprueba los hallazgos. Después va la demo a Champions. El Tech Lead se consulta.</p>
+        </article>
+      </div>
+    </li>
+  </ol>
+  <footer>
+    <a href="dry-run-flow.html">← Dry Run 001, sin firmas</a>
+    <span class="foot-note">Mismo ancho que el Dry Run. Ábrelos juntos.</span>
+  </footer>
+</main>
+</body>
+</html>

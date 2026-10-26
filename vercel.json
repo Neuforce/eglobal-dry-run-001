@@ -1,0 +1,14 @@
+{
+  "framework": null,
+  "installCommand": "",
+  "buildCommand": "python3 deploy/assemble-vercel.py",
+  "outputDirectory": "public",
+  "headers": [
+    {
+      "source": "/web/railway-config.js",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store" }
+      ]
+    }
+  ]
+}

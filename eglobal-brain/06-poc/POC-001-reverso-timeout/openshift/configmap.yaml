@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: poc-001-reverso-config
+  namespace: dry-run-001
+data:
+  DEFAULT_TIMEOUT_S: "25"
+  ISSUER_TIMEOUTS: "A=20"
+  EMISOR_URL: "http://emisor-mock:8081"

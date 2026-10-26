@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: emisor-mock
+  namespace: dry-run-001
+spec:
+  selector:
+    app: emisor-mock
+  ports:
+    - port: 8081
+      targetPort: 8081

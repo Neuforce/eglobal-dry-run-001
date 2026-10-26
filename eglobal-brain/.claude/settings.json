@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "deny": [
+      "Bash(git push:*)",
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./.mcp.json)"
+    ],
+    "ask": [
+      "Bash(git commit:*)",
+      "Bash(oc apply:*)",
+      "Bash(oc delete:*)",
+      "Bash(kubectl apply:*)",
+      "Bash(kubectl delete:*)"
+    ]
+  }
+}

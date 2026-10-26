@@ -1,0 +1,60 @@
+<section id="promptguide" data-transition="fade" style="background:#ECE8DF;color:#3D4A5C;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:20px">
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;color:#0E1A2B">Cómo se ejecuta: la guía de prompts</h2>
+<p style="font-size:30px;line-height:1.35;color:#3D4A5C;width:1640px">Un paso a la vez. En Gemini, Codex o Devin basta con «Sigue skills/&lt;nombre&gt;/SKILL.md».</p>
+<x-embed style="position:absolute;left:128px;top:320px;width:1664px;height:580px"><!doctype html><html><head><meta charset="utf-8"><style>
+html,body{margin:0;background:transparent;font-family:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;overflow:hidden}
+#term{position:absolute;left:0;top:0;width:1010px;height:572px;background:#0E1A2B;border-radius:18px;overflow:hidden}
+#bar{height:46px;background:#1B2A40;display:flex;align-items:center;gap:10px;padding:0 18px;color:#8C9AAE;font-size:24px}
+.d{width:14px;height:14px;border-radius:50%;display:inline-block}
+#out{padding:14px 24px;font-family:Menlo,Consolas,"DejaVu Sans Mono",monospace;font-size:24px;line-height:36px;color:#E6EBF2;white-space:pre}
+.p{color:#F2A541}.ok{color:#7FD1AE}.gt{color:#F7B267}
+#cur{display:inline-block;width:13px;height:26px;background:#E6EBF2;vertical-align:-4px;animation:b 1s steps(1) infinite}
+@keyframes b{50%{opacity:0}}
+#tree{position:absolute;left:1050px;top:0;width:614px;height:572px;background:#F5F3EE;border-radius:18px;box-sizing:border-box;padding:24px 30px}
+#tree h3{margin:0 0 14px;font-size:26px;color:#0E1A2B}
+.f{font-family:Menlo,Consolas,monospace;font-size:24px;line-height:1.2;padding:9px 14px;border-radius:10px;color:#5B6676;display:flex;justify-content:space-between;transition:background .4s,color .4s;margin-bottom:6px}
+.f.on{background:#DDF1E9;color:#0E5E46;font-weight:700}
+.f.now{background:#13795B;color:#fff}
+</style></head><body>
+<div id="term"><div id="bar"><span class="d" style="background:#E5534B"></span><span class="d" style="background:#E0A93A"></span><span class="d" style="background:#4CAF7A"></span>&nbsp; eglobal-brain · ejemplo ilustrativo</div><div id="out"></div></div>
+<div id="tree"><h3>eglobal-brain/</h3>
+<div class="f" id="f0"><span>00-context/</span><span>○</span></div>
+<div class="f" id="f1"><span>01-legacy/</span><span>○</span></div>
+<div class="f" id="f2"><span>02-asis/</span><span>○</span></div>
+<div class="f" id="f3"><span>03-code/</span><span>○</span></div>
+<div class="f" id="f4"><span>04-audit/</span><span>○</span></div>
+<div class="f" id="f5"><span>05-spec/</span><span>○</span></div>
+<div class="f" id="f6"><span>06-poc/</span><span>○</span></div>
+</div>
+<script>
+var S=[["/setup-context",[["ok","✓ 00-context/ completado"],["gt","🟧 gate G0 → Tech Lead + Alejandra"]],0],
+["/design-validation-process SPIKE-001",[["ok","✓ spikes/SPIKE-001/validation-process.md"]],4],
+["/ingest-legacy-docs SPIKE-001",[["ok","✓ 01-legacy/output/knowledge/P-CONC.md"],["gt","🟧 gate G1 → SME"]],1],
+["/ingest-asis-docs SPIKE-001",[["ok","✓ 02-asis/output/legacy-delta.md"],["gt","🟧 gate G2 → Alejandra"]],2],
+["/extract-code-rules SPIKE-001",[["ok","✓ 03-code/output/code-map.md"],["gt","🟧 gate G3 → Tech Lead"]],3],
+["/cross-reference SPIKE-001",[["ok","✓ matriz: 31 ✅ 6 ⚠️ 4 🕳️ 2 👻 3 ❓"]],4],
+["/review-gate 04-audit",[["ok","✓ 9 decisiones · 3 reglas en RULES.md"]],4],
+["/audit-report SPIKE-001",[["ok","✓ validated-asis/P-CONC.md"]],4],
+["/write-prd CAP-001",[["ok","✓ 05-spec/CAP-001/prd.md"]],5],
+["/write-sdd CAP-001",[["ok","✓ sdd.md + AGENTS.md"],["gt","🟧 gate G5 → negocio + arquitecto"]],5],
+["/plan-poc POC-001",[["ok","✓ 06-poc/POC-001/poc-plan.md"]],6],
+["/build-poc POC-001",[["ok","✓ Containerfile · openshift/ · tests"]],6]];
+var out=document.getElementById("out"),L=[],cur='<span id="cur"></span>';
+function esc(t){return t.replace(/&/g,"&amp;").replace(/</g,"&lt;")}
+function render(typing){var v=L.slice(-12);out.innerHTML=v.join("\n")+(typing!==undefined?"\n"+'<span class="p">&gt; </span>'+esc(typing)+cur:"")}
+function lit(i,now){for(var j=0;j<7;j++){var e=document.getElementById("f"+j);e.classList.toggle("now",j==now)}var f=document.getElementById("f"+i);f.classList.add("on");f.lastChild.textContent="●"}
+function reset(){L=[];for(var j=0;j<7;j++){var e=document.getElementById("f"+j);e.className="f";e.lastChild.textContent="○"}}
+var si=0;
+function step(){
+ if(si>=S.length){setTimeout(function(){reset();si=0;step()},2600);return}
+ var s=S[si],c=s[0],k=0;
+ (function type(){render(c.slice(0,k));if(k<c.length){k++;setTimeout(type,38)}else{
+  L.push('<span class="p">&gt; </span>'+esc(c));render();
+  var o=s[1],m=0;
+  (function emit(){if(m<o.length){L.push('<span class="'+o[m][0]+'">  '+esc(o[m][1])+'</span>');if(m==0)lit(s[2],s[2]);render();m++;setTimeout(emit,420)}else{si++;setTimeout(step,650)}})()}})()}
+render("");setTimeout(step,500);
+</script></body></html></x-embed>
+<p style="position:absolute;left:128px;bottom:64px;width:800px;font-size:24px;color:#5B6676">16 · Cómo se ejecuta</p>
+<div style="position:absolute;right:128px;bottom:52px;width:1000px;display:flex;flex-direction:row;justify-content:end"><p style="font-family:'JetBrains Mono', monospace;font-size:24px;color:#0E1A2B;background:#F5F3EE;border-radius:999px;padding:8px 22px">Abrir en repo → guide/00-prompt-guide.md</p></div>
+<aside>Así se ve una corrida completa (los números son ilustrativos). Cada comando es un skill del repo; cada uno escribe en su carpeta y, donde corresponde, se detiene en un gate. Con Claude Code son comandos con diagonal; con Gemini, Codex o Devin se le dice al agente que siga el archivo SKILL.md. La guía de prompts tiene, para cada paso, quién lo corre, qué escribir, qué esperar y cuándo está listo.</aside>
+</section>

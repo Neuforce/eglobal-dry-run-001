@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: emisor-mock
+  namespace: dry-run-001
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: emisor-mock
+  template:
+    metadata:
+      labels:
+        app: emisor-mock
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+      containers:
+        - name: emisor-mock
+          image: poc-001-emisor-mock:dry-run
+          ports:
+            - containerPort: 8081
+          envFrom:
+            - configMapRef:
+                name: poc-001-reverso-config
+            - secretRef:
+                name: poc-001-reverso-emisor
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8081
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8081
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false

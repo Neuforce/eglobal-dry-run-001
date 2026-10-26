@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dry Run 001 — flujo automático</title>
+<style>
+  :root {
+    --sheet: 720px;
+    --ink: #1c2430;
+    --muted: #5e6874;
+    --paper: #f3f1ec;
+    --card: #ffffff;
+    --line: #e3ddd4;
+    --agent: #2457d6;
+    --agent-bg: #f3f6ff;
+    --skip: #8d8680;
+    --skip-bg: #f7f6f4;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font: 16px/1.45 "Segoe UI", system-ui, sans-serif;
+  }
+  .sheet {
+    width: var(--sheet);
+    margin: 32px auto 48px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 28px 32px 20px;
+  }
+  .kicker {
+    margin: 0 0 6px;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--agent);
+    font-weight: 650;
+  }
+  h1 { margin: 0 0 8px; font-size: 28px; letter-spacing: -0.02em; }
+  .lede { margin: 0 0 18px; color: var(--muted); min-height: 46px; }
+  .legend {
+    display: flex;
+    gap: 16px;
+    margin: 0 0 22px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: #faf9f7;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .swatch { width: 14px; height: 14px; border-radius: 4px; display: inline-block; }
+  .swatch.agent { background: var(--agent); }
+  .swatch.skip { background: transparent; border: 1.5px dashed var(--skip); }
+  ol { list-style: none; margin: 0; padding: 0; }
+  .phase { display: grid; grid-template-columns: 36px 1fr; gap: 12px; }
+  .phase + .phase { margin-top: 14px; }
+  .rail { display: flex; flex-direction: column; align-items: center; }
+  .num {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--ink); color: white;
+    font-size: 13px; font-weight: 650;
+    display: grid; place-items: center;
+  }
+  .stem { flex: 1; width: 2px; background: var(--line); margin-top: 6px; min-height: 12px; }
+  .phase:last-child .stem { display: none; }
+  h2 { margin: 0 0 8px; font-size: 16px; }
+  .node {
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin: 0 0 8px;
+  }
+  .node:last-child { margin-bottom: 0; }
+  .node header {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; font-weight: 650; letter-spacing: 0.02em;
+    margin-bottom: 4px;
+  }
+  .node p { margin: 0; font-size: 14px; }
+  .agent { background: var(--agent-bg); border-left: 4px solid var(--agent); }
+  .agent header { color: var(--agent); }
+  .skip { background: var(--skip-bg); border-left: 4px dashed var(--skip); }
+  .skip header, .skip p { color: var(--skip); }
+  svg { display: block; }
+  footer {
+    margin-top: 22px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 14px;
+  }
+  footer a { color: var(--agent); font-weight: 650; }
+  .foot-note { color: var(--muted); }
+</style>
+</head>
+<body>
+<main class="sheet">
+  <p class="kicker">Dry Run</p>
+  <h1>Dry Run 001</h1>
+  <p class="lede">Lo que ejecuta <code>run-dry-run-001.py</code>, en orden. Las siete fases del método corren solas. Ninguna compuerta queda firmada.</p>
+  <div class="legend">
+    <span><i class="swatch agent"></i> Lo hace el script</span>
+    <span><i class="swatch skip"></i> Compuerta humana omitida</span>
+  </div>
+  <ol>
+    <li class="phase">
+      <div class="rail"><div class="num">0</div><div class="stem"></div></div>
+      <div>
+        <h2>Setup</h2>
+        <article class="node agent">
+          <header>
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="#2457d6" stroke-width="1.4"/><path d="M8 4.5v4l2.4 1.4" fill="none" stroke="#2457d6" stroke-width="1.4" stroke-linecap="round"/></svg>
+            Agente
+          </header>
+          <p>Llena el contexto (inventario, fuentes, repos, glosario, estándares y arquitectura) y escribe el proceso de validación del spike.</p>
+        </article>
+        <article class="node skip">
+          <header>G0 omitida</header>
+          <p>Alejandra y el Tech Lead no aprueban.</p>
+        </article>
+      </div>
+    </li>
+    <li class="phase">
+      <div class="rail"><div class="num">1</div><div class="stem"></div></div>
+      <div>
+        <h2>Legacy</h2>
+        <article class="node agent">
+          <header>
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="#2457d6" stroke-width="1.4"/><path d="M8 4.5v4l2.4 1.4" fill="none" stroke="#2457d6" stroke-width="1.4" stroke-linecap="round"/></svg>
+            Agente
+          </header>
+          <p>Lee el documento ficticio de 2019 y extrae el inventario y las unidades de conocimiento.</p>
+        </article>
+        <article class="node skip">
+          <header>G1 omitida</header>
+          <p>El SME no revisa la muestra.</p>
+        </article>
+      </div>
+    </li>
+    <li class="phase">
+      <div class="rail"><div class="num">2</div><div class="stem"></div></div>
+      <div>
+        <h2>As-Is</h2>
+        <article class="node agent">
+          <header>
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="#2457d6" stroke-width="1.4"/><path d="M8 4.5v4l2.4 1.4" fill="none" stroke="#2457d6" stroke-width="1.4" stroke-linecap="round"/></svg>
+            Agente
+          </header>
+          <p>Lee el As-Is nuevo, extrae sus unidades y anota el delta contra el legado.</p>
+        </article>
+        <article class="node skip">
+          <header>G2 omitida</header>
+          <p>Alejandra no aprueba.</p>
+        </article>
+      </div>
+    </li>
+    <li class="phase">
+      <div class="rail"><div class="num">3</div><div class="stem"></div></div>
+      <div>
+        <h2>Code</h2>
+        <article class="node agent">
+          <header>
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="#2457d6" stroke-width="1.4"/><path d="M8 4.5v4l2.4 1.4" fill="none" stroke="#2457d6" stroke-width="1.4" stroke-linecap="round"/></svg>
+            Agente
+          </header>
+          <p>Lee <code>reversal.py</code> en solo lectura y escribe el mapa de código y sus unidades.</p>
+        </article>
+        <article class="node skip">
+          <header>G3 omitida</header>
+          <p>El Tech Lead no aprueba.</p>
+        </article>
+      </div>
+    </li>
+    <li class="phase">
+      <div class="rail"><div class="num">4</div><div class="stem"></div></div>
+      <div>
+        <h2>Audit</h2>
+        <article class="node agent">
+          <header>
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="#2457d6" stroke-width="1.4"/><path d="M8 4.5v4l2.4 1.4" fill="none" stroke="#2457d6" stroke-width="1.4" stroke-linecap="round"/></svg>
+            Agente
+          </header>
+          <p>Cruza las tres fuentes, escribe la matriz, las discrepancias y una bitácora automática. Cierra con el As-Is validado y el informe.</p>
+        </article>
+        <article class="node skip">
+          <header>G4 omitida</header>
+          <p>Alejandra y el Tech Lead no resuelven las discrepancias ni firman.</p>
+        </article>
+      </div>
+    </li>
+    <li class="phase">
+      <div class="rail"><div class="num">5</div><div class="stem"></div></div>
+      <div>
+        <h2>Spec</h2>
+        <article class="node agent">
+          <header>
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="#2457d6" stroke-width="1.4"/><path d="M8 4.5v4l2.4 1.4" fill="none" stroke="#2457d6" stroke-width="1.4" stroke-linecap="round"/></svg>
+            Agente
+          </header>
+          <p>Genera el PRD, el SDD y el AGENTS.md de CAP-001-reverso-timeout.</p>
+        </article>
+        <article class="node skip">
+          <header>G5a y G5b omitidas</header>
+          <p>El dueño de negocio no aprueba el PRD. El Tech Lead o el arquitecto no aprueban el SDD.</p>
+        </article>
+      </div>
+    </li>
+    <li class="phase">
+      <div class="rail"><div class="num">6</div><div class="stem"></div></div>
+      <div>
+        <h2>PoC</h2>
+        <article class="node agent">
+          <header>
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="#2457d6" stroke-width="1.4"/><path d="M8 4.5v4l2.4 1.4" fill="none" stroke="#2457d6" stroke-width="1.4" stroke-linecap="round"/></svg>
+            Agente
+          </header>
+          <p>Arma el plan, el servicio, el mock, las pruebas, los Containerfile y los manifiestos. Corre las pruebas en local y escribe los hallazgos. No despliega.</p>
+        </article>
+        <article class="node skip">
+          <header>G6 omitida</header>
+          <p>El arquitecto no aprueba el plan ni los hallazgos. No hay demo a Champions.</p>
+        </article>
+      </div>
+    </li>
+  </ol>
+  <footer>
+    <span class="foot-note">Mismo ancho que el Spike 001. Ábrelos juntos.</span>
+    <a href="spike-001-flow.html">Spike 001, con aprobaciones →</a>
+  </footer>
+</main>
+</body>
+</html>
