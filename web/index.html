@@ -3,82 +3,180 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dry run 001</title>
+<title>Dry Run 001</title>
 <style>
-  :root { color-scheme: light; }
+  :root {
+    --ink: #1c2430;
+    --muted: #5e6874;
+    --paper: #f3f1ec;
+    --card: #ffffff;
+    --line: #e3ddd4;
+    --agent: #2457d6;
+    --agent-bg: #f3f6ff;
+    --skip: #8d8680;
+    --skip-bg: #f7f6f4;
+  }
   * { box-sizing: border-box; }
-  body { margin: 0; font-family: "IBM Plex Sans", "Segoe UI", sans-serif; background: #f4f1ea; color: #1c1915; }
-  header { padding: 20px 24px 8px; }
-  h1 { margin: 0; font-size: 28px; }
-  header p { margin: 6px 0 0; color: #5c564c; }
-  main { padding: 8px 24px 32px; }
+  html, body { margin: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font: 16px/1.45 "Segoe UI", system-ui, sans-serif;
+  }
+  .sheet {
+    width: min(1080px, calc(100% - 32px));
+    margin: 28px auto 40px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 28px 32px 24px;
+  }
+  .kicker {
+    margin: 0 0 6px;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--agent);
+    font-weight: 650;
+  }
+  h1 { margin: 0 0 22px; font-size: 28px; letter-spacing: -0.02em; }
   .board {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 20px 28px;
+    gap: 28px;
     align-items: start;
   }
-  #inputs-col { grid-column: 1; grid-row: 1; }
-  #outputs-col { grid-column: 2; grid-row: 1; }
-  #run-panel {
-    grid-column: 1 / -1;
-    justify-self: center;
-    width: min(440px, 100%);
-  }
-  section { background: #fff; border: 1px solid #e4ddd0; border-radius: 10px; padding: 16px; }
-  section.stack { background: transparent; border: 0; padding: 0; }
   h2 { margin: 0 0 12px; font-size: 16px; }
-  @media (max-width: 800px) {
-    .board { grid-template-columns: 1fr; }
-    #inputs-col, #outputs-col, #run-panel { grid-column: 1; grid-row: auto; width: 100%; }
+  details.card {
+    background: var(--agent-bg);
+    border-left: 4px solid var(--agent);
+    border-radius: 10px;
+    margin: 0 0 10px;
   }
-  details.card { background: #fff; border: 1px solid #e4ddd0; border-radius: 10px; margin: 0 0 10px; }
-  details.card summary { cursor: pointer; padding: 12px 14px; font-weight: 600; list-style: none; }
+  details.card summary {
+    cursor: pointer;
+    padding: 10px 12px;
+    font-weight: 650;
+    list-style: none;
+  }
   details.card summary::-webkit-details-marker { display: none; }
-  details.card summary::before { content: "▸"; display: inline-block; width: 1em; color: #6b645a; }
+  details.card summary::before { content: "▸"; display: inline-block; width: 1.1em; color: var(--agent); }
   details.card[open] summary::before { content: "▾"; }
-  details.card .card-body { padding: 0 8px 10px; }
-  details.card .card-body p { margin: 0 8px 8px; color: #6b645a; }
-  button, .file { display: block; width: 100%; text-align: left; border: 0; background: transparent; color: #1c1915; padding: 6px 8px; border-radius: 6px; cursor: pointer; font: inherit; }
-  .file:hover, .file[aria-current="true"] { background: #efe8db; }
-  #run { background: #1f4fd8; color: #fff; font-weight: 600; padding: 10px 12px; }
-  #run:disabled { background: #9aa6c4; cursor: wait; }
-  #run:hover:not(:disabled) { background: #183fae; }
-  #status { margin-top: 10px; font-size: 14px; }
-  pre { margin: 0; white-space: pre-wrap; word-break: break-word; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 13px; line-height: 1.45; }
-  #run-log { max-height: 240px; overflow: auto; margin-top: 12px; }
-  #backdrop { position: fixed; inset: 0; background: rgba(28, 25, 21, .35); opacity: 0; pointer-events: none; transition: opacity .2s ease; z-index: 1; }
+  details.card .card-body { padding: 0 8px 8px; }
+  .phase { display: grid; grid-template-columns: 36px 1fr; gap: 12px; }
+  .phase + .phase { margin-top: 14px; }
+  .rail { display: flex; flex-direction: column; align-items: center; }
+  .num {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--line); color: var(--muted);
+    font-size: 13px; font-weight: 650;
+    display: grid; place-items: center;
+  }
+  .phase.current .num { background: var(--agent); color: #fff; }
+  .phase.done .num { background: var(--ink); color: #fff; }
+  .stem { flex: 1; width: 2px; background: var(--line); margin-top: 6px; min-height: 12px; }
+  .phase:last-child .stem { display: none; }
+  .phase h3 { margin: 4px 0 8px; font-size: 16px; }
+  .phase.current h3 { color: var(--agent); }
+  .result:empty { display: none; }
+  .node {
+    background: var(--agent-bg);
+    border-left: 4px solid var(--agent);
+    border-radius: 10px;
+    padding: 8px 8px 6px;
+    margin: 0 0 8px;
+  }
+  .node.note {
+    background: var(--skip-bg);
+    border-left: 4px solid var(--skip);
+    color: var(--ink);
+    padding: 10px 12px;
+    font-family: ui-monospace, monospace;
+    font-size: 12px;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  button.file, button.action {
+    font: inherit;
+    cursor: pointer;
+  }
+  button.file {
+    display: block;
+    width: 100%;
+    text-align: left;
+    border: 0;
+    background: transparent;
+    color: var(--ink);
+    padding: 6px 8px;
+    border-radius: 6px;
+  }
+  button.file:hover, button.file[aria-current="true"] { background: #e4ebff; }
+  .actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 26px;
+  }
+  button.action {
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-weight: 650;
+  }
+  #run { background: var(--agent); color: #fff; border: 0; }
+  #run:hover:not(:disabled) { background: #1b46b3; }
+  #run:disabled, #reset:disabled { opacity: 0.55; cursor: wait; }
+  #reset { background: #fff; color: var(--ink); border: 1px solid var(--line); }
+  #reset:hover:not(:disabled) { background: var(--skip-bg); }
+  #status { min-height: 1.45em; margin: 12px 0 0; text-align: center; color: var(--muted); font-size: 14px; }
+  #backdrop { position: fixed; inset: 0; background: rgba(28, 36, 48, .35); opacity: 0; pointer-events: none; transition: opacity .2s ease; z-index: 1; }
   #backdrop.open { opacity: 1; pointer-events: auto; }
-  #drawer { position: fixed; top: 0; right: 0; z-index: 2; width: min(640px, 100%); height: 100%; background: #fff; box-shadow: -8px 0 28px rgba(28, 25, 21, .16); transform: translateX(100%); transition: transform .25s ease; display: flex; flex-direction: column; }
+  #drawer {
+    position: fixed; top: 0; right: 0; z-index: 2;
+    width: min(640px, 100%); height: 100%;
+    background: #fff;
+    box-shadow: -8px 0 28px rgba(28, 36, 48, .16);
+    transform: translateX(100%);
+    transition: transform .25s ease;
+    display: flex; flex-direction: column;
+  }
   #drawer.open { transform: translateX(0); }
   #drawer header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 16px 16px 8px; }
-  #drawer h2 { margin: 0; font-size: 14px; font-weight: 500; color: #5c564c; word-break: break-all; }
-  #close { width: auto; background: #efe8db; padding: 8px 12px; font-weight: 600; }
-  #view { flex: 1; overflow: auto; padding: 8px 16px 24px; }
+  #drawer h2 { margin: 0; font-size: 14px; font-weight: 500; color: var(--muted); word-break: break-all; }
+  #close { width: auto; background: var(--skip-bg); border: 0; border-radius: 8px; padding: 8px 12px; font: inherit; font-weight: 650; cursor: pointer; }
+  #view { flex: 1; overflow: auto; margin: 0; padding: 8px 16px 24px; white-space: pre-wrap; word-break: break-word; font-family: ui-monospace, monospace; font-size: 13px; line-height: 1.45; }
+  @media (max-width: 800px) {
+    .sheet { padding: 20px 16px; }
+    .board { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
-<header>
-  <h1>Dry run 001</h1>
-  <p>Proceso ficticio P-REV. Local, sin compuertas humanas.</p>
-</header>
-<main>
+<main class="sheet">
+  <p class="kicker">Dry Run</p>
+  <h1>Dry Run 001</h1>
   <div class="board">
-    <section class="stack" id="inputs-col">
+    <section>
       <h2>Inputs</h2>
       <div id="inputs"></div>
     </section>
-    <section class="stack" id="outputs-col">
+    <section>
       <h2>Outputs</h2>
-      <div id="outputs"></div>
-    </section>
-    <section id="run-panel">
-      <h2>Ejecutar</h2>
-      <button id="run" type="button">Ejecutar dry run</button>
-      <p id="status">Todavía no se ha corrido desde esta página.</p>
-      <pre id="run-log" hidden></pre>
+      <ol id="stages">
+        <li class="phase" data-stage="0"><div class="rail"><div class="num">0</div><div class="stem"></div></div><div><h3>Setup</h3><div class="result"></div></div></li>
+        <li class="phase" data-stage="1"><div class="rail"><div class="num">1</div><div class="stem"></div></div><div><h3>Legacy</h3><div class="result"></div></div></li>
+        <li class="phase" data-stage="2"><div class="rail"><div class="num">2</div><div class="stem"></div></div><div><h3>As-Is</h3><div class="result"></div></div></li>
+        <li class="phase" data-stage="3"><div class="rail"><div class="num">3</div><div class="stem"></div></div><div><h3>Code</h3><div class="result"></div></div></li>
+        <li class="phase" data-stage="4"><div class="rail"><div class="num">4</div><div class="stem"></div></div><div><h3>Audit</h3><div class="result"></div></div></li>
+        <li class="phase" data-stage="5"><div class="rail"><div class="num">5</div><div class="stem"></div></div><div><h3>Spec</h3><div class="result"></div></div></li>
+        <li class="phase" data-stage="6"><div class="rail"><div class="num">6</div><div class="stem"></div></div><div><h3>PoC</h3><div class="result"></div></div></li>
+      </ol>
     </section>
   </div>
+  <div class="actions">
+    <button class="action" id="run" type="button">Ejecutar</button>
+    <button class="action" id="reset" type="button">Reset</button>
+  </div>
+  <p id="status"></p>
 </main>
 <div id="backdrop"></div>
 <script src="/web/railway-config.js"></script>
@@ -93,20 +191,51 @@
 const view = document.getElementById("view");
 const pathEl = document.getElementById("path");
 const statusEl = document.getElementById("status");
-const runLog = document.getElementById("run-log");
 const runBtn = document.getElementById("run");
+const resetBtn = document.getElementById("reset");
 const drawer = document.getElementById("drawer");
 const backdrop = document.getElementById("backdrop");
-const labels = {
-  documentos: "Documentos",
-  codigo: "Código legacy",
-  contexto: "Contexto",
-  conocimiento: "Conocimiento",
-  auditoria: "Auditoría",
-  spec: "Spec",
-  poc: "PoC",
-  estado: "Estado y pruebas"
-};
+const inputLabels = { documentos: "Documentos", codigo: "Código legacy", contexto: "Contexto" };
+const stages = [
+  { id: "0", name: "Setup", files: (tree) => tree.outputs.contexto || [] },
+  { id: "1", name: "Legacy", files: (tree) => (tree.outputs.conocimiento || []).filter((path) => path.includes("/01-legacy/")) },
+  { id: "2", name: "As-Is", files: (tree) => (tree.outputs.conocimiento || []).filter((path) => path.includes("/02-asis/")) },
+  { id: "3", name: "Code", files: (tree) => (tree.outputs.conocimiento || []).filter((path) => path.includes("/03-code/")) },
+  { id: "4", name: "Audit", files: (tree) => tree.outputs.auditoria || [] },
+  { id: "5", name: "Spec", files: (tree) => tree.outputs.spec || [] },
+  { id: "6", name: "PoC", files: (tree) => (tree.outputs.poc || []).concat(tree.outputs.estado || []) },
+];
+let treeCache = null;
+
+function wait(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function usesLocalApi() {
+  return (location.hostname === "127.0.0.1" || location.hostname === "localhost") && location.port === "8766";
+}
+
+function absoluteUrl(value) {
+  const raw = String(value || "").trim().replace(/\/$/, "");
+  if (!raw) return "";
+  if (/^https?:\/\//i.test(raw)) return raw;
+  return "https://" + raw.replace(/^\/+/, "");
+}
+
+function railwayBases() {
+  const cfg = window.RAILWAY || {};
+  return { reverso: absoluteUrl(cfg.reversoUrl), emisor: absoluteUrl(cfg.emisorUrl) };
+}
+
+function fileButton(path) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "file";
+  button.textContent = path.split("/").slice(-2).join("/");
+  button.title = path;
+  button.onclick = () => openFile(path, button);
+  return button;
+}
 
 function group(title, paths) {
   const card = document.createElement("details");
@@ -122,18 +251,51 @@ function group(title, paths) {
     empty.textContent = "Vacío.";
     body.append(empty);
   } else {
-    for (const path of paths) {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = "file";
-      button.textContent = path.split("/").slice(-2).join("/");
-      button.title = path;
-      button.onclick = () => openFile(path, button);
-      body.append(button);
-    }
+    for (const path of paths) body.append(fileButton(path));
   }
   card.append(body);
   return card;
+}
+
+function paintInputs(tree) {
+  const inputs = document.getElementById("inputs");
+  inputs.replaceChildren();
+  for (const [key, paths] of Object.entries(tree.inputs)) inputs.append(group(inputLabels[key], paths));
+}
+
+function stageNode(id) {
+  return document.querySelector('.phase[data-stage="' + id + '"]');
+}
+
+function clearOutputs() {
+  for (const stage of stages) {
+    const node = stageNode(stage.id);
+    node.classList.remove("current", "done");
+    node.querySelector(".result").replaceChildren();
+  }
+  statusEl.textContent = "";
+}
+
+function showStageFiles(stage, paths) {
+  const result = stageNode(stage.id).querySelector(".result");
+  const box = document.createElement("div");
+  box.className = "node";
+  if (!paths.length) {
+    const empty = document.createElement("p");
+    empty.textContent = "Sin archivos.";
+    box.append(empty);
+  } else {
+    for (const path of paths) box.append(fileButton(path));
+  }
+  result.append(box);
+  result.scrollIntoView({ block: "nearest", behavior: "smooth" });
+}
+
+function showStageNote(id, text) {
+  const note = document.createElement("pre");
+  note.className = "node note";
+  note.textContent = text;
+  stageNode(id).querySelector(".result").append(note);
 }
 
 function openDrawer() {
@@ -146,18 +308,6 @@ function closeDrawer() {
   drawer.classList.remove("open");
   backdrop.classList.remove("open");
   drawer.setAttribute("aria-hidden", "true");
-}
-
-function usesLocalApi() {
-  return (location.hostname === "127.0.0.1" || location.hostname === "localhost") && location.port === "8766";
-}
-
-function railwayBases() {
-  const cfg = window.RAILWAY || {};
-  return {
-    reverso: String(cfg.reversoUrl || "").replace(/\/$/, ""),
-    emisor: String(cfg.emisorUrl || "").replace(/\/$/, ""),
-  };
 }
 
 async function openFile(path, button) {
@@ -173,42 +323,12 @@ async function openFile(path, button) {
     return;
   }
   const response = await fetch("/" + path.split("/").map(encodeURIComponent).join("/"));
-  view.textContent = response.ok
-    ? await response.text()
-    : "No se pudo leer " + path + " (" + response.status + ").";
+  view.textContent = response.ok ? await response.text() : "No se pudo leer " + path + " (" + response.status + ").";
 }
 
-function paint(tree) {
-  const inputs = document.getElementById("inputs");
-  const outputs = document.getElementById("outputs");
-  inputs.replaceChildren();
-  outputs.replaceChildren();
-  for (const [key, paths] of Object.entries(tree.inputs)) inputs.append(group(labels[key], paths));
-  for (const [key, paths] of Object.entries(tree.outputs)) outputs.append(group(labels[key], paths));
-}
-
-function showRun(payload) {
-  const code = payload.exit_code;
-  const ok = code === 0;
-  statusEl.textContent = code === null || code === undefined
-    ? "Sin ejecución."
-    : (ok ? "Pruebas en verde." : "La corrida falló.") + " Salida " + code + ". " + (payload.duration_s ?? "—") + " s.";
-  const parts = [];
-  if (payload.stdout) parts.push(payload.stdout);
-  if (payload.stderr) parts.push(payload.stderr);
-  if (payload.error) parts.push(payload.error);
-  runLog.hidden = false;
-  runLog.textContent = parts.join("\n") || "Sin salida.";
-}
-
-async function runOnRailway() {
+async function callRailway() {
   const { reverso, emisor } = railwayBases();
-  if (!reverso || !emisor) {
-    statusEl.textContent = "Faltan RAILWAY_REVERSO_URL y RAILWAY_EMISOR_URL.";
-    runLog.hidden = false;
-    runLog.textContent = "Esas variables se escriben en /web/railway-config.js al construir el sitio en Vercel.";
-    return;
-  }
+  if (!reverso || !emisor) throw new Error("Faltan RAILWAY_REVERSO_URL y RAILWAY_EMISOR_URL.");
   const lines = [];
   const healthReverso = await fetch(reverso + "/health");
   lines.push("GET " + reverso + "/health → " + healthReverso.status + " " + (await healthReverso.text()));
@@ -221,52 +341,63 @@ async function runOnRailway() {
   });
   lines.push("POST " + reverso + "/v1/autorizaciones → " + decision.status + " " + (await decision.text()));
   const ok = healthReverso.status === 200 && healthEmisor.status === 200 && decision.status === 200;
-  statusEl.textContent = ok
-    ? "Railway respondió 200 en los dos health y en la autorización."
-    : "Algún endpoint de Railway no respondió 200.";
-  runLog.hidden = false;
-  runLog.textContent = lines.join("\n");
+  if (!ok) throw new Error(lines.join("\n"));
+  return lines.join("\n");
+}
+
+async function play(tree) {
+  clearOutputs();
+  for (const stage of stages) {
+    for (const other of stages) stageNode(other.id).classList.remove("current");
+    stageNode(stage.id).classList.add("current");
+    statusEl.textContent = "Etapa " + stage.id + " · " + stage.name;
+    let note = "";
+    if (stage.id === "6" && !usesLocalApi()) note = await callRailway();
+    else await wait(420);
+    showStageFiles(stage, stage.files(tree));
+    if (note) showStageNote(stage.id, note);
+    stageNode(stage.id).classList.remove("current");
+    stageNode(stage.id).classList.add("done");
+  }
+  statusEl.textContent = "Listo.";
+}
+
+async function loadTree() {
+  if (usesLocalApi()) return (await fetch("/api/tree")).json();
+  return (await fetch("/web/tree.json")).json();
 }
 
 async function load() {
-  if (usesLocalApi()) {
-    const tree = await (await fetch("/api/tree")).json();
-    paint(tree);
-    const last = await (await fetch("/api/last-run")).json();
-    if (last.stdout || last.stderr) showRun(last);
-    return;
-  }
-  const tree = await (await fetch("/web/tree.json")).json();
-  paint(tree);
-  runBtn.textContent = "Ejecutar en Railway";
-  const { reverso, emisor } = railwayBases();
-  statusEl.textContent = reverso && emisor
-    ? "Listo. El botón llama a Railway, no a esta página."
-    : "Faltan RAILWAY_REVERSO_URL y RAILWAY_EMISOR_URL.";
+  treeCache = await loadTree();
+  paintInputs(treeCache);
 }
 
 runBtn.onclick = async () => {
   runBtn.disabled = true;
-  statusEl.textContent = "Ejecutando…";
+  resetBtn.disabled = true;
   try {
     if (usesLocalApi()) {
+      statusEl.textContent = "Etapa 0 · Setup";
+      stageNode("0").classList.add("current");
       const response = await fetch("/api/run", { method: "POST" });
       const payload = await response.json();
-      showRun(payload);
-      const tree = await (await fetch("/api/tree")).json();
-      paint(tree);
-    } else {
-      await runOnRailway();
+      if (payload.exit_code !== 0) {
+        throw new Error(payload.stderr || payload.error || "La corrida falló.");
+      }
+      treeCache = await loadTree();
     }
+    await play(treeCache);
   } catch (error) {
-    statusEl.textContent = usesLocalApi()
-      ? "No se pudo llamar al servidor."
-      : "No se pudo llamar a Railway. Revisa CORS y las URLs públicas.";
-    runLog.hidden = false;
-    runLog.textContent = String(error);
+    statusEl.textContent = String(error.message || error);
   } finally {
     runBtn.disabled = false;
+    resetBtn.disabled = false;
   }
+};
+
+resetBtn.onclick = () => {
+  if (runBtn.disabled) return;
+  clearOutputs();
 };
 
 document.getElementById("close").onclick = closeDrawer;
