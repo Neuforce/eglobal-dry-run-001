@@ -371,10 +371,8 @@ async function play(tree) {
     stageNode(stage.id).classList.add("current");
     statusEl.textContent = "Etapa " + stage.id + " · " + stage.name;
     let note = "";
-    const started = performance.now();
     if (stage.id === "6" && !usesLocalApi()) note = await callRailway();
-    const remaining = 3000 - (performance.now() - started);
-    if (remaining > 0) await wait(remaining);
+    else await wait(420);
     showStageFiles(stage, stage.files(tree));
     if (note) showStageNote(stage.id, note);
     stageNode(stage.id).classList.remove("current");
