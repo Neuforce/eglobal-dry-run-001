@@ -371,8 +371,10 @@ async function play(tree) {
     stageNode(stage.id).classList.add("current");
     statusEl.textContent = "Etapa " + stage.id + " · " + stage.name;
     let note = "";
+    const started = performance.now();
     if (stage.id === "6" && !usesLocalApi()) note = await callRailway();
-    else await wait(420);
+    const remaining = 3000 - (performance.now() - started);
+    if (remaining > 0) await wait(remaining);
     showStageFiles(stage, stage.files(tree));
     if (note) showStageNote(stage.id, note);
     stageNode(stage.id).classList.remove("current");
@@ -392,6 +394,7 @@ async function load() {
 }
 
 runBtn.onclick = async () => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
   runBtn.disabled = true;
   resetBtn.disabled = true;
   try {
