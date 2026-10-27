@@ -13,6 +13,8 @@
     --line: #e3ddd4;
     --agent: #2457d6;
     --agent-bg: #f3f6ff;
+    --done: #1b7f4a;
+    --done-bg: #e8f6ee;
     --skip: #8d8680;
     --skip-bg: #f7f6f4;
   }
@@ -62,6 +64,11 @@
   details.card summary::-webkit-details-marker { display: none; }
   details.card summary::before { content: "▸"; display: inline-block; width: 1.1em; color: var(--agent); }
   details.card[open] summary::before { content: "▾"; }
+  details.card.done {
+    background: var(--done-bg);
+    border-left-color: var(--done);
+  }
+  details.card.done summary::before { color: var(--done); }
   details.card .card-body { padding: 0 8px 8px; }
   .phase { display: grid; grid-template-columns: 36px 1fr; gap: 12px; }
   .phase + .phase { margin-top: 14px; }
@@ -73,7 +80,9 @@
     display: grid; place-items: center;
   }
   .phase.current .num { background: var(--agent); color: #fff; }
-  .phase.done .num { background: var(--ink); color: #fff; }
+  .phase.done .num { background: var(--done); color: #fff; }
+  .phase.done h3 { color: var(--done); }
+  .phase.done .stem { background: #b7dfc6; }
   .stem { flex: 1; width: 2px; background: var(--line); margin-top: 6px; min-height: 12px; }
   .phase:last-child .stem { display: none; }
   .phase h3 { margin: 4px 0 8px; font-size: 16px; }
@@ -111,6 +120,8 @@
     border-radius: 6px;
   }
   button.file:hover, button.file[aria-current="true"] { background: #e4ebff; }
+  details.card.done button.file:hover,
+  details.card.done button.file[aria-current="true"] { background: #d7f0e1; }
   .actions {
     display: flex;
     justify-content: center;
@@ -278,24 +289,32 @@ function clearOutputs() {
 
 function showStageFiles(stage, paths) {
   const result = stageNode(stage.id).querySelector(".result");
-  const box = document.createElement("div");
-  box.className = "node";
+  const card = document.createElement("details");
+  card.className = "card done";
+  card.open = false;
+  const summary = document.createElement("summary");
+  summary.textContent = paths.length === 1 ? "1 archivo" : paths.length + " archivos";
+  if (!paths.length) summary.textContent = "Sin archivos";
+  card.append(summary);
+  const body = document.createElement("div");
+  body.className = "card-body";
   if (!paths.length) {
     const empty = document.createElement("p");
     empty.textContent = "Sin archivos.";
-    box.append(empty);
+    body.append(empty);
   } else {
-    for (const path of paths) box.append(fileButton(path));
+    for (const path of paths) body.append(fileButton(path));
   }
-  result.append(box);
-  result.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  card.append(body);
+  result.append(card);
 }
 
 function showStageNote(id, text) {
   const note = document.createElement("pre");
   note.className = "node note";
   note.textContent = text;
-  stageNode(id).querySelector(".result").append(note);
+  const body = stageNode(id).querySelector(".card-body");
+  body.append(note);
 }
 
 function openDrawer() {
@@ -359,7 +378,7 @@ async function play(tree) {
     stageNode(stage.id).classList.remove("current");
     stageNode(stage.id).classList.add("done");
   }
-  statusEl.textContent = "Listo.";
+  statusEl.textContent = "";
 }
 
 async function loadTree() {
