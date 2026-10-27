@@ -251,7 +251,7 @@ function fileButton(path) {
 function group(title, paths) {
   const card = document.createElement("details");
   card.className = "card";
-  card.open = true;
+  card.open = false;
   const summary = document.createElement("summary");
   summary.textContent = title;
   card.append(summary);
