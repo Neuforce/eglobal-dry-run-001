@@ -454,7 +454,7 @@ Probar la cadena completa del método con un proceso ficticio, de punta a punta,
 | 4 | Cross-reference | cross-reference | matrix + DISC | omitida |
 | 5 | Joint review | review-gate | decision-log | omitida: decide el script |
 | 6 | Audit report | audit-report | validated-asis/P-REV.md | omitida |
-| 7 | PRD y SDD | write-prd / write-sdd | 05-spec/CAP-001-reverso-timeout/ | omitida |
+| 7 | Spec OpenSpec | write-prd / write-sdd | 05-spec/CAP-001-reverso-timeout/ y openspec/ | omitida |
 | 8 | PoC | plan-poc / build-poc / poc-findings | 06-poc/POC-001-reverso-timeout/ | omitida |
 
 ## 5. Sampling and acceptance
@@ -875,60 +875,6 @@ D-001 código manda en el timeout. D-002 cola manual fuera de alcance. D-003 rei
 
 def write_spec(rows) -> None:
     folder = BRAIN / "05-spec/CAP-001-reverso-timeout"
-    write(
-        folder / "prd.md",
-        f"""# PRD: CAP-001-reverso-timeout Reverso por timeout del emisor
-
-{BANNER}
-
-- **Version:** 0.1 · **Date:** {DATE} · **Owner:** dry-run
-- **Based on:** validated-asis/P-REV.md v1.0, audit-report findings #1
-
-## 1. Problem and context
-Los tres relatos del timeout no coinciden. El que corre es el de 25 segundos, fijo en el código. El To-Be de este slice lo hace configurable por emisor sin perder ese valor por defecto.
-
-## 2. Users and actors
-Adquirente, switch, emisor.
-
-## 3. Goals / non-goals
-| Goal | Metric | Source |
-|---|---|---|
-| G1 Timeout por emisor, default 25 s | AC-001.1 y AC-001.2 en verde | VR-REV del timeout, hallazgo 1 |
-| Fuera de meta | Cola manual y reintentos | DISC-REV-002, DISC-REV-003 |
-
-## 4. Scope
-| Item | Change (new / modified / retired / unchanged) | As-Is ref |
-|---|---|---|
-| Timeout | modified | VR del timeout, decisión D-001 |
-| Destino del reverso | unchanged | VR del reverso al adquirente |
-| Lista de emisores | unchanged | VR de emisor autorizado |
-| Cola manual | retired en este slice | DISC-REV-002 |
-| Reintentos | unchanged, no entra al slice | DISC-REV-003 |
-
-## 5. User journeys / scenarios
-1. El emisor A tiene timeout de 20 s y no responde: hay reverso al adquirente.
-2. Un emisor sin configuración no responde en 25 s: hay reverso.
-3. El emisor responde a tiempo: no hay reverso.
-
-## 6. Business rules carried over / changed
-| VR / KU ref | As-Is rule | To-Be rule | Change |
-|---|---|---|---|
-| D-001 / KU-ASIS-REV timeout | 30 segundos, redacción de intención | Timeout por emisor, default 25 s | modified |
-| KU-ASIS-REV reverso | El reverso va al adquirente | Igual | unchanged |
-
-## 7. Success metrics
-Las dos AC del timeout pasan en local.
-
-## 8. Constraints and assumptions
-Dos contenedores, emisor simulado, datos sintéticos. Imagen base real de eGlobal: desconocida.
-
-## 9. Risks and open questions
-El proceso es ficticio. Un despliegue en el clúster de eGlobal no está hecho.
-
-## 10. Approval
-Omitida en dry-run 001.
-""",
-    )
     change = ROOT / "openspec/changes/cap-001-reverso-timeout"
     spec_body = """### Requirement: Timeout de reverso configurable por emisor
 The system SHALL generar un reverso hacia el adquirente cuando el emisor no responde dentro de su timeout. El valor por defecto es 25 segundos. Un emisor puede tener el suyo; en el ejemplo, el emisor A usa 20 segundos. Origen: decisión D-001 / PRD G1. Respecto del As-Is, el timeout pasa de una intención de 30 segundos a este valor configurable.
@@ -1087,21 +1033,13 @@ La imagen base aprobada de OpenShift no está.
 - [ ] 3.1 Pruebas AC-001.1, AC-001.2 y AC-001.3 (REQ-001). unittest sobre la función de decisión y una llamada HTTP local. Cada prueba lleva el ID del AC en el nombre.
 """,
     )
-    write(
-        folder / "sdd.md",
-        f"""# SDD: CAP-001-reverso-timeout Reverso por timeout del emisor
-
-{BANNER}
-
-La especificación está en formato OpenSpec. Este archivo solo indica dónde.
-
-- Propuesta: `openspec/changes/cap-001-reverso-timeout/proposal.md`
-- Spec del cambio: `openspec/changes/cap-001-reverso-timeout/specs/reverso-timeout/spec.md`
-- Diseño: `openspec/changes/cap-001-reverso-timeout/design.md`
-- Tareas: `openspec/changes/cap-001-reverso-timeout/tasks.md`
-- Spec vigente: `openspec/specs/reverso-timeout/spec.md`
-""",
-    )
+    for name in ("proposal.md", "design.md", "tasks.md"):
+        write(folder / name, (change / name).read_text(encoding="utf-8"))
+    write(folder / "spec.md", (ROOT / "openspec/specs/reverso-timeout/spec.md").read_text(encoding="utf-8"))
+    for stale in ("prd.md", "sdd.md"):
+        leftover = folder / stale
+        if leftover.is_file():
+            leftover.unlink()
     write(
         folder / "AGENTS.md",
         f"""# AGENTS.md: CAP-001-reverso-timeout
@@ -1112,7 +1050,7 @@ La especificación está en formato OpenSpec. Este archivo solo indica dónde.
 Decide si un emisor que no respondió ya venció su timeout y, en ese caso, arma el reverso hacia el adquirente.
 
 ## Source of truth
-- Spec: `openspec/specs/reverso-timeout/spec.md`, `openspec/changes/cap-001-reverso-timeout/`, `./prd.md`
+- Spec: `./proposal.md`, `./spec.md`, `./design.md`, `./tasks.md`
 - Validated As-Is: `04-audit/output/validated-asis/P-REV.md`
 - Architecture: `00-context/architecture/`
 

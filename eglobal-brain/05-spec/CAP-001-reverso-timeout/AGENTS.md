@@ -6,7 +6,7 @@
 Decide si un emisor que no respondió ya venció su timeout y, en ese caso, arma el reverso hacia el adquirente.
 
 ## Source of truth
-- Spec: `openspec/specs/reverso-timeout/spec.md`, `openspec/changes/cap-001-reverso-timeout/`, `./prd.md`
+- Spec: `./proposal.md`, `./spec.md`, `./design.md`, `./tasks.md`
 - Validated As-Is: `04-audit/output/validated-asis/P-REV.md`
 - Architecture: `00-context/architecture/`
 

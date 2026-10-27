@@ -24,7 +24,7 @@ Probar la cadena completa del método con un proceso ficticio, de punta a punta,
 | 4 | Cross-reference | cross-reference | matrix + DISC | omitida |
 | 5 | Joint review | review-gate | decision-log | omitida: decide el script |
 | 6 | Audit report | audit-report | validated-asis/P-REV.md | omitida |
-| 7 | PRD y SDD | write-prd / write-sdd | 05-spec/CAP-001-reverso-timeout/ | omitida |
+| 7 | Spec OpenSpec | write-prd / write-sdd | 05-spec/CAP-001-reverso-timeout/ y openspec/ | omitida |
 | 8 | PoC | plan-poc / build-poc / poc-findings | 06-poc/POC-001-reverso-timeout/ | omitida |
 
 ## 5. Sampling and acceptance

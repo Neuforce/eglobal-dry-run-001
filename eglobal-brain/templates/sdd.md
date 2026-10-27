@@ -5,7 +5,7 @@ CONSUMED BY: plan-poc, build-poc, future construction
 -->
 # SDD en formato OpenSpec
 
-Un cambio vive en `openspec/changes/<cambio>/`. El spec vigente vive en `openspec/specs/<capacidad>/spec.md`.
+Un cambio vive en `openspec/changes/<cambio>/` y, con los mismos cuatro archivos, en `05-spec/CAP-###-<slug>/`. El spec vigente vive en `openspec/specs/<capacidad>/spec.md`. El dry run no escribe `prd.md` ni `sdd.md`.
 
 | Archivo | Qué es |
 |---|---|
