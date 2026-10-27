@@ -929,52 +929,121 @@ El proceso es ficticio. Un despliegue en el clúster de eGlobal no está hecho.
 Omitida en dry-run 001.
 """,
     )
+    change = ROOT / "openspec/changes/cap-001-reverso-timeout"
+    spec_body = """### Requirement: Timeout de reverso configurable por emisor
+The system SHALL generar un reverso hacia el adquirente cuando el emisor no responde dentro de su timeout. El valor por defecto es 25 segundos. Un emisor puede tener el suyo; en el ejemplo, el emisor A usa 20 segundos. Origen: decisión D-001 / PRD G1. Respecto del As-Is, el timeout pasa de una intención de 30 segundos a este valor configurable.
+
+#### Scenario: Emisor A a los 20 segundos
+- **WHEN** el emisor A tiene timeout de 20 s, no responde y ya van 20 s
+- **THEN** se genera un reverso al adquirente
+
+#### Scenario: Emisor sin configuración a los 25 segundos
+- **WHEN** un emisor sin configuración no responde y ya van 25 s
+- **THEN** se genera un reverso al adquirente
+
+#### Scenario: Emisor sin configuración a los 24 segundos
+- **WHEN** un emisor sin configuración no responde y van 24 s
+- **THEN** no se genera reverso
+
+### Requirement: Decisión sin espera de reloj
+The system SHALL decidir el reverso sin esperar al reloj real en la prueba.
+
+#### Scenario: Segundos ya transcurridos
+- **WHEN** la prueba entrega los segundos ya transcurridos
+- **THEN** la decisión no usa una espera real
+
+### Requirement: Token del mock
+The system SHALL exigir en el mock el token Bearer del Secret de ejemplo.
+
+#### Scenario: Token distinto
+- **WHEN** el mock recibe un token distinto del Secret de ejemplo
+- **THEN** rechaza la petición
+"""
     write(
-        folder / "sdd.md",
-        f"""# SDD: CAP-001-reverso-timeout Reverso por timeout del emisor
+        ROOT / "openspec/specs/reverso-timeout/spec.md",
+        f"""# reverso-timeout Specification
 
 {BANNER}
 
-- **Version:** 0.1 · **PRD:** ./prd.md · **Architecture refs:** 00-context/architecture/target-architecture.md, adr/ADR-001-poc-approach.md
-- **Design status:** provisional (la imagen base aprobada de OpenShift sigue sin dato de eGlobal)
+## Purpose
+Decide si un emisor que no respondió ya venció su timeout y, en ese caso, arma el reverso hacia el adquirente. El valor por defecto sigue siendo 25 segundos.
 
-## Part 1: Requirements
-### REQ-001 Timeout de reverso configurable por emisor
-- **EARS:** When el emisor no responde dentro de su timeout, the system shall generar un reverso hacia el adquirente.
-- **Source:** decisión D-001 / PRD G1
-- **Change:** modified
-- **Acceptance criteria:**
-  - [ ] AC-001.1 Given el emisor A con timeout 20 s, when no responde y ya van 20 s, then se genera un reverso al adquirente.
-  - [ ] AC-001.2 Given un emisor sin configuración, when no responde y ya van 25 s, then se genera un reverso al adquirente.
-  - [ ] AC-001.3 Given un emisor sin configuración, when no responde y van 24 s, then no se genera reverso.
+## Requirements
 
-### Non-functional requirements
-| NFR | Target | Ref nfrs.md |
-|---|---|---|
-| Latencia de la decisión | Sin espera de reloj en la prueba | Latency |
-| Token hacia el mock | Bearer con el valor del Secret de ejemplo | Security |
+{spec_body}""",
+    )
+    write(
+        change / "specs/reverso-timeout/spec.md",
+        f"""# Spec Delta
 
-## Part 2: Design
-### Components
+{BANNER}
+
+## Purpose
+El timeout deja de ser un número fijo de intención y pasa a ser configurable por emisor, con 25 segundos por defecto.
+
+## ADDED Requirements
+
+{spec_body}""",
+    )
+    write(
+        change / "proposal.md",
+        f"""# Proposal
+
+{BANNER}
+
+## Why
+Los tres relatos del timeout no coinciden. El que corre es el de 25 segundos, fijo en el código. El As-Is lo redacta como una intención de 30 segundos. Este slice lo hace configurable por emisor sin perder el valor que ya corre.
+
+## What Changes
+- El timeout pasa a ser por emisor. El default es 25 segundos. El emisor A del ejemplo usa 20 segundos.
+- Si el emisor no responde dentro de ese timeout, el reverso va al adquirente.
+- La cola manual y los reintentos no entran en este slice.
+- El emisor se simula. No hay persistencia.
+
+## Capabilities
+
+### New Capabilities
+- `reverso-timeout`: decidir el reverso cuando el emisor no responde a tiempo.
+
+### Modified Capabilities
+
+## Impact
+Dos contenedores (`reverso` y `emisor-mock`), contratos `POST /v1/autorizaciones` y `POST /v1/autorizar`, y `GET /health` en ambos. La imagen base de OpenShift sigue sin dato de eGlobal.
+""",
+    )
+    write(
+        change / "design.md",
+        f"""# Design
+
+{BANNER}
+
+## Context
+Diseño provisional. La imagen base aprobada de OpenShift sigue sin dato de eGlobal. Referencias: `00-context/architecture/target-architecture.md` y `adr/ADR-001-poc-approach.md`.
+
+## Goals / Non-Goals
+- Cumplir el timeout por emisor, con 25 segundos por defecto.
+- Fuera de meta: cola manual y reintentos.
+
+## Decisions
+ADR-001: uno o dos contenedores, integraciones simuladas, datos sintéticos.
+
 ```mermaid
 flowchart LR
   Cliente[Cliente] --> SVC[reverso]
   SVC --> MOCK[emisor-mock]
 ```
-| Component | Responsibility | Tech (per standards.md) |
+
+| Component | Responsibility | Tech |
 |---|---|---|
 | reverso | Decide si hay reverso | Python 3.12, biblioteca estándar |
 | emisor-mock | Responde la consulta del emisor | Python 3.12, biblioteca estándar |
 
-### Data model
 Sin persistencia. La configuración entra por variables de entorno.
 
-### APIs / events / files (contracts)
 - `POST /v1/autorizaciones` cuerpo `emisor_id`, `respondio`, `transcurrido_s`. Respuesta `reverso`, `destino`, `timeout_s`.
 - `POST /v1/autorizar` en el mock. Respuesta `respondio`.
 - `GET /health` en ambos.
 
-### Key sequences
 ```mermaid
 sequenceDiagram
   participant Cliente
@@ -986,25 +1055,51 @@ sequenceDiagram
   Reverso-->>Cliente: reverso sí o no
 ```
 
-### Integrations (ref integration-catalog.md)
-INT-01 simulada por `emisor-mock`.
+INT-01 se simula con `emisor-mock`. El mock rechaza un token distinto. El log sale a stdout. Un JSON inválido responde 400.
 
-### Security, observability, error handling
-El mock rechaza un token distinto. El log sale a stdout. Un JSON inválido responde 400.
+## Risks / Trade-offs
+El proceso es ficticio. Un despliegue en el clúster de eGlobal no está hecho.
 
-### Design decisions (ADRs)
-ADR-001: uno o dos contenedores, integraciones simuladas, datos sintéticos.
+## Migration Plan
+El legacy sigue aparte. Este PoC no lo reemplaza.
 
-## Part 3: Tasks
-| Task | Description | REQ refs | Est. | PoC slice? |
-|---|---|---|---|---|
-| T-01 | Servicio de decisión y HTTP | REQ-001 | S | Y |
-| T-02 | Mock del emisor | REQ-001 | S | Y |
-| T-03 | Containerfile, ConfigMap, Secret de ejemplo, Deployment | REQ-001 | S | Y |
-| T-04 | Pruebas AC-001.1 a AC-001.3 | REQ-001 | S | Y |
+## Open Questions
+La imagen base aprobada de OpenShift no está.
+""",
+    )
+    write(
+        change / "tasks.md",
+        f"""# Tasks
 
-## Test strategy
-unittest sobre la función de decisión y una llamada HTTP local. Cada prueba lleva el ID del AC en el nombre.
+{BANNER}
+
+## 1. Servicio
+
+- [ ] 1.1 Servicio de decisión y HTTP (REQ-001)
+- [ ] 1.2 Mock del emisor (REQ-001)
+
+## 2. Empaque
+
+- [ ] 2.1 Containerfile, ConfigMap, Secret de ejemplo y Deployment (REQ-001)
+
+## 3. Pruebas
+
+- [ ] 3.1 Pruebas AC-001.1, AC-001.2 y AC-001.3 (REQ-001). unittest sobre la función de decisión y una llamada HTTP local. Cada prueba lleva el ID del AC en el nombre.
+""",
+    )
+    write(
+        folder / "sdd.md",
+        f"""# SDD: CAP-001-reverso-timeout Reverso por timeout del emisor
+
+{BANNER}
+
+La especificación está en formato OpenSpec. Este archivo solo indica dónde.
+
+- Propuesta: `openspec/changes/cap-001-reverso-timeout/proposal.md`
+- Spec del cambio: `openspec/changes/cap-001-reverso-timeout/specs/reverso-timeout/spec.md`
+- Diseño: `openspec/changes/cap-001-reverso-timeout/design.md`
+- Tareas: `openspec/changes/cap-001-reverso-timeout/tasks.md`
+- Spec vigente: `openspec/specs/reverso-timeout/spec.md`
 """,
     )
     write(
@@ -1017,7 +1112,7 @@ unittest sobre la función de decisión y una llamada HTTP local. Cada prueba ll
 Decide si un emisor que no respondió ya venció su timeout y, en ese caso, arma el reverso hacia el adquirente.
 
 ## Source of truth
-- Spec: `./sdd.md`, `./prd.md`
+- Spec: `openspec/specs/reverso-timeout/spec.md`, `openspec/changes/cap-001-reverso-timeout/`, `./prd.md`
 - Validated As-Is: `04-audit/output/validated-asis/P-REV.md`
 - Architecture: `00-context/architecture/`
 
